@@ -4,7 +4,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import App from './App'
 import "./index.css"
 import Javascript from './routes/Javascript';
-import Python from './routes/python';
+import Python from './routes/Python';
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <BrowserRouter>
