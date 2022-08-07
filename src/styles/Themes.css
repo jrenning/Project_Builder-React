@@ -1,0 +1,18 @@
+.theme-btn {
+    top: 10%;
+    right: 3%;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background-color: var(--button-hover-color);
+    cursor: pointer;
+    position: fixed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.3s ease-in-out;
+}
+
+.theme-btn:active {
+    transform: translateY(-5px);
+}
