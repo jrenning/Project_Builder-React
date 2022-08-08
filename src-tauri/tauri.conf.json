@@ -4,7 +4,7 @@
     "beforeBuildCommand": "npm run build",
     "beforeDevCommand": "npm run dev",
     "devPath": "http://localhost:3000",
-    "distDir": "../dist"
+    "distDir": "../build"
   },
   "package": {
     "productName": "project-builder",
@@ -12,7 +12,19 @@
   },
   "tauri": {
     "allowlist": {
-      "all": true
+      "all": true,
+      "shell": {
+        "all": true,
+        "execute": true,
+        "scope": [
+          {
+            "name": "vscode-open",
+            "cmd": "$PUBLIC\\AppData\\Local\\Programs\\Microsoft VS Code\\bin\\code.cmd",
+            "args": true
+          }
+        ]
+
+      }
     },
     "bundle": {
       "active": true,

@@ -6,7 +6,7 @@ interface InputProps {
   label: string;
   type: string;
   name: string;
-  placeholder: string;
+  placeholder?: string;
 }
 
 const FormLabel = styled.label`

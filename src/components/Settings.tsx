@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import Button from './Button'
 
@@ -12,8 +13,12 @@ const Controls = styled.div`
 export default function Settings() {
   return (
     <Controls>
-      <Button name="Path Settings" />
-      <Button name="File Settings" />
+      <Link to="/path_settings">
+        <Button name="Path Settings" />
+      </Link>
+      <Link to="/file_settings">
+        <Button name="File Settings" />
+      </Link>
     </Controls>
   );
 }
