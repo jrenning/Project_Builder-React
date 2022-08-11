@@ -18,8 +18,8 @@
         "execute": true,
         "scope": [
           {
-            "name": "vscode-open",
-            "cmd": "$PUBLIC\\AppData\\Local\\Programs\\Microsoft VS Code\\bin\\code.cmd",
+            "name": "cmd",
+            "cmd": "cmd",
             "args": true
           }
         ]

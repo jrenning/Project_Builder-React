@@ -1,28 +1,28 @@
 import {invoke} from "@tauri-apps/api/tauri"
 import {Command} from "@tauri-apps/api/shell"
+import {formSchema} from "./JavascriptForm"
+import { z } from "zod"
 
-type Javascript = {
-    project_name: string
-    github_link: string
-    react: boolean
-    git_setup: boolean
-}
+
+type Javascript = z.infer<typeof formSchema>
 
 export const JavascriptSubmit = async (data: Javascript) => {
-    console.log('Hello')
-    const vscode_open = await new Command("vscode-open", [
-      "-n",
-      "C:Users\\jacka\\OneDrive\\Desktop\\JavaScript\\calculator",
-    ])
-    vscode_open.on("error", (error) => console.error(`vscode_open error: "${error}"`));
-    vscode_open.stdout.on("data", (line) =>
-      console.log(`vscode_open stdout: "${line}"`)
-    );
-    vscode_open.stderr.on("data", (line) =>
-      console.log(`vscode_open stderr: "${line}"`)
-    );
-    console.log(vscode_open)
 
-    const child = await vscode_open.spawn();
-    console.log("pid:", child.pid);
+    const command: any = await new Command("cmd", ["/C","cod", "-n", "."], {
+      cwd: "C:\\Projects\\Flutter\\learning_dart",
+    })
+      .execute(
+      )
+      .catch(function (err) {
+        console.log(err);
+      });;
+
+    if (command["stderr"]) {
+        alert("VSCode CLI wasn't found, make sure you can run the code command in your terminal")
+    }
+
+    
+
 }
+
+
