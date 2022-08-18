@@ -21,9 +21,53 @@
             "name": "cmd",
             "cmd": "cmd",
             "args": true
+          },
+          {
+            "name": "make_env",
+            "cmd": "python",
+            "args": ["-m", "venv", "env"]
+          },
+          {
+            "name": "git",
+            "cmd": "git",
+            "args": ["init"]
+          },
+          {
+            "name": "git-commit",
+            "cmd": "git",
+            "args": ["commit", "-m", { "validator": "\\S+" }]
+          },
+          {
+            "name": "git-add-all-commit",
+            "cmd": "git",
+            "args": ["commit", "-am", { "validator": "\\S+" }]
+          },
+          {
+            "name": "github-link",
+            "cmd": "git",
+            "args": ["remote", "add", "origin", { "validator": "\\S+" }]
+          },
+          {
+            "name": "github-branch-rename",
+            "cmd": "git",
+            "args": ["branch", "-M", "main"]
+          },
+          {
+            "name": "github-push-initial",
+            "cmd": "git",
+            "args": ["push", "-u", "origin", "main"]
+          },
+          {
+            "name": "github-link-cli",
+            "cmd": "gh",
+            "args": ["repo", "create", { "validator": "\\S+" }, "--private", "--source=.", "--remote=upstream"]
+          },
+          {
+            "name": "cargo-new",
+            "cmd": "cargo",
+            "args": ["new", { "validator": "\\S+" }]
           }
         ]
-
       }
     },
     "bundle": {
