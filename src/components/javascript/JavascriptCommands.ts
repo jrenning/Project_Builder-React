@@ -3,7 +3,7 @@ import { BaseProjectCommands } from "../shared/sharedCommands";
 
 export class JavascriptProjectCommands extends BaseProjectCommands {
   constructor(name: string, path: string) {
-    super(path, name);
+    super(name, path);
   }
   async CreateReactApp(): Promise<boolean> {
     // check for uppercase in project name

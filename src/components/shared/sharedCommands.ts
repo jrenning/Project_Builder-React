@@ -9,7 +9,6 @@ export class BaseProjectCommands {
     this.path = path;
   }
   async createProjectDirectory() {
-    // ? move project path to outside the function
     // makes project directory and returns new path to it
     const dir_creation = await invoke("make_dir", {
       dir: this.name,
@@ -28,17 +27,15 @@ export class BaseProjectCommands {
 
     return !!dir_creation;
   }
-  async createFile(file_name: string): Promise<boolean> {
-    let file_creation = await invoke("write_file", {
+  async createFile(file_name: string): Promise<unknown>  {
+    let file_creation = invoke("write_file", {
       fileName: file_name,
       dir: this.path,
-    })
-      .then()
-      .catch(function (err) {
-        console.log(err);
-      });
+    }).then().catch(function(err) {console.log(err)})
 
-    return !!file_creation;
+    //rust returns true or false, no !! needed
+    return file_creation
+    
   }
   async initializeGit() {
     const git_command = await new Command("git", this.path, {
@@ -91,15 +88,57 @@ export class BaseProjectCommands {
         "--remote=upstream",
       ],
       { cwd: this.path }
-    );
+    )
+      .execute()
+      .catch(function (err) {
+        console.log(err);
+      });;
 
     return !!github_cli_comamnd;
   }
-  async openVsCode() {
+
+  async linkToExistingGithub(github_link: string) {
+    const github_rename = await new Command(
+      "github-branch-rename",
+      ["branch", "-M", "main"],
+      { cwd: this.path }
+    )
+      .execute()
+      .catch(function (err) {
+        console.log(err);
+      });
+
+      const link = await new Command("github-link", [
+        "remote",
+        "add",
+        "origin",
+        github_link,
+      ], {cwd: this.path})
+        .execute()
+        .catch(function (err) {
+          console.log(err);
+        });
+
+    const push_content = await new Command("github-push-initial", [
+      "push",
+      "-u",
+      "origin",
+      "main",
+    ], {cwd: this.path})
+      .execute()
+      .catch(function (err) {
+        console.log(err);
+      });
+
+      return !!push_content
+  }
+}
+
+ export const openVsCode = async (path: string) => {
     // opens new vscode window in directory, uses path passed by function
     // TODO: add path checking to make sure its legit (could be higher up)
     const command: any = await new Command("cmd", ["/C", "code", "-n", "."], {
-      cwd: this.path,
+      cwd: path,
     })
       .execute()
       .catch(function (err) {
@@ -113,6 +152,3 @@ export class BaseProjectCommands {
       );
     }
   }
-}
-
-

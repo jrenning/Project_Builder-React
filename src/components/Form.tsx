@@ -31,13 +31,14 @@ import {
 // Type of zod schema
 import { ZodSchema, TypeOf } from "zod";
 
-const ProjectForm = styled.form`
+const ProjectForm: any = styled.form`
   background-color: ${(props) => props.theme.colors.secondary_color};
   padding: 2rem;
   border-radius: 8px;
 `;
 const FormDiv = styled.div`
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   margin-top: 4rem;
@@ -47,6 +48,11 @@ const FormDiv = styled.div`
 const FieldSet = styled.fieldset`
     outline: none;
     border: none;
+    display: flex;
+    flex-direction: column;
+    input {
+      margin-bottom: 2rem;
+    }
 `
 
 interface FormProps<T extends FieldValues = any>
@@ -83,6 +89,7 @@ export const Form = <T extends FieldValues>({
     <FormDiv>
       <FormProvider {...form}>
         {/* the `form` passed here is return value of useForm() hook */}
+        {/* //@ts-ignore */}
         <ProjectForm onSubmit={form.handleSubmit(onSubmit)} {...props}>
           <FieldSet disabled={form.formState.isSubmitting}>{children}</FieldSet>
         </ProjectForm>

@@ -25,6 +25,7 @@ const BackLink = styled.div`
   pointer-events: none;
   height: 7px;
   width: 7px;
+  background-color: white;
 `
 
 const HeaderDiv = styled.div`
@@ -51,14 +52,7 @@ function Header({name, arrow, link}: Props) {
         {arrow && link ? (
           <Link to={link}>
             <BackLink>
-              <div
-                style={{
-                  width: "7px",
-                  height: "7px",
-                  color: "white",
-                  backgroundColor: "white",
-                }}
-              />
+
             </BackLink>
           </Link>
         ) : (

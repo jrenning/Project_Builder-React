@@ -5,7 +5,7 @@ import Header from "../components/Header";
 function Python() {
   return (
     <ThemeProvider theme={theme}>
-      <Header name="Python"></Header>
+      <Header name="Python" arrow={true} link="/"></Header>
     </ThemeProvider>
   );
 }
