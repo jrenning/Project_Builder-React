@@ -2,7 +2,9 @@ import React from 'react'
 
 function PathSettings() {
   return (
-    <div>PathSettings</div>
+    <div>
+      
+    </div>
   )
 }
 

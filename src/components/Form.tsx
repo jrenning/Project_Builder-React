@@ -89,7 +89,6 @@ export const Form = <T extends FieldValues>({
     <FormDiv>
       <FormProvider {...form}>
         {/* the `form` passed here is return value of useForm() hook */}
-        {/* //@ts-ignore */}
         <ProjectForm onSubmit={form.handleSubmit(onSubmit)} {...props}>
           <FieldSet disabled={form.formState.isSubmitting}>{children}</FieldSet>
         </ProjectForm>

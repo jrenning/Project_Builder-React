@@ -45,9 +45,10 @@ export default function JavascriptForm() {
         <Checkbox
           label="Git Setup"
           type="checkbox"
+          disabled={form.watch("React")}
           {...form.register("Git_Setup")}
         ></Checkbox>
-        <SubmitButton name="Submit Me" />
+        <SubmitButton name="Create Project" />
       </Form>
       <VSCodeButton path={path}></VSCodeButton>
     </>
