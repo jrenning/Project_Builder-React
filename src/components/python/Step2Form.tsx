@@ -1,28 +1,49 @@
 import React from "react";
 import { z } from "zod";
 import { Form, useForm } from "../Form";
-import { Input } from "../Input";
 import {SelectBox} from "../shared/SelectBox";
 import SubmitButton from "../SubmitButton";
 import { PythonFormState } from "./PythonForm";
+import styled from "styled-components";
+import FormButton from "../shared/FormButton";
 
 export const formSchema2 = z.object({
-  Framework: z.string().min(1, "Please enter a name"),
-  Package_Manager: z.string().optional(),
-  Git_Setup: z.string().optional(),
+  Framework: z.enum(["Django", "Flask", "Vanilla"]),
+  Package_Manager: z.enum(["Venv", "Poetry"]),
+  Git_Setup: z.enum([ "No Setup",
+    "Initialize Git"
+    ,"Create repo and connect"
+    ,"Connect to existing repo"]),
   Packages: z.string(),
 });
+
+const ButtonDiv = styled.div`
+    display: flex;
+    justify-content: space-between;
+    padding: .5rem ;
+    align-items: center;
+    
+`
 
 type Step2Data = z.infer<typeof formSchema2>;
 
 type Props = {
   setFormState: React.Dispatch<React.SetStateAction<PythonFormState>>;
+  setFormStep: React.Dispatch<React.SetStateAction<number>>;
 };
 
-function Step2Form({ setFormState }: Props) {
+function Step2Form({ setFormState, setFormStep }: Props) {
   const Step1Submit = (data: Step2Data) => {
-    console.log(data);
+    setFormState(prevState => ({
+        ...prevState,
+        ...data
+    }))
   };
+
+  const goBack = () => {
+    setFormStep(0)
+  }
+
   const form = useForm({
     schema: formSchema2,
   });
@@ -40,8 +61,10 @@ function Step2Form({ setFormState }: Props) {
         select_name="Package Manager"
         {...form.register("Package_Manager")}
       />
-
-      <SubmitButton name="Create Project" />
+      <ButtonDiv>
+        <FormButton name="Back" onClick={goBack}/>
+        <SubmitButton name="Create Project" />
+      </ButtonDiv>
     </Form>
   );
 }

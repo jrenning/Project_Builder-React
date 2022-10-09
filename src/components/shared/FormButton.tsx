@@ -1,5 +1,5 @@
 import React from 'react'
-import styled from 'styled-components'
+import styled from "styled-components";
 
 export const SubmitDiv = styled.div`
     display: flex;
@@ -18,18 +18,17 @@ padding: .25rem .75rem;
 }
     
 `
-
 type Props = {
     name: string
+    onClick: () => void
 }
 
-
-function SubmitButton({name}: Props) {
+function FormButton({name, onClick}: Props) {
   return (
     <SubmitDiv>
-        <Button type='submit'>{name}</Button>
+        <Button onClick={onClick}>{name}</Button>
     </SubmitDiv>
   )
 }
 
-export default SubmitButton
+export default FormButton

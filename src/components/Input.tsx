@@ -1,6 +1,7 @@
 import { ComponentProps, forwardRef } from "react";
 import styled from "styled-components";
 import { FieldError } from "./Form";
+import {FormLabel} from "../styles/FormStyles"
 
 interface InputProps {
   label: string;
@@ -16,12 +17,12 @@ const FormStack = styled.div`
     flex-direction: column;
     outline: none;
 `
-const FormLabel = styled.label`
-  align-self: flex-start;
-  color: ${(props) => props.theme.colors.text_color};
-  font-weight: 650;
-  font-size: larger;
-`;
+// export const FormLabel = styled.label`
+//   align-self: flex-start;
+//   color: ${(props) => props.theme.colors.text_color};
+//   font-weight: 650;
+//   font-size: larger;
+// `;
 
 const FormTextInput = styled.input`
     border-radius: 8px;

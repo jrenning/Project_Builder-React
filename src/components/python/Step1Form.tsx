@@ -1,39 +1,52 @@
-import React from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { z } from "zod";
 import { Form, useForm } from "../Form";
 import { Input } from "../Input";
-import {SelectBox} from "../shared/SelectBox";
+import { SelectBox } from "../shared/SelectBox";
 import SubmitButton from "../SubmitButton";
 import { PythonFormState } from "./PythonForm";
-import {useForm as useHookForm} from "react-hook-form"
+import { useForm as useHookForm } from "react-hook-form";
 
 export const formSchema1 = z.object({
   Project_Name: z.string().min(1, "Please enter a name"),
-  Project_Type: z.string().optional(),
+  Project_Type: z.enum(["New Project", "Existing Template"]),
   Path: z.string(),
 });
 
 type Step1Data = z.infer<typeof formSchema1>;
 
 type Props = {
+  formData: PythonFormState;
   setFormState: React.Dispatch<React.SetStateAction<PythonFormState>>;
+  setFormStep: React.Dispatch<React.SetStateAction<number>>;
 };
 
-function Step1Form({setFormState}: Props) {
-  const Step1Submit = ({Project_Name, Project_Type, Path}: Step1Data ) => {
-    console.log(Project_Name)
-    let updated_state = {
-        "step1": false,
-        "step2": true,
-    }
-    setFormState(prevState => ({
-        ...prevState,
-        ...updated_state
-    }))
-  };
+function Step1Form({ formData, setFormState, setFormStep }: Props) {
   const form = useForm({
     schema: formSchema1,
   });
+
+
+  const Step1Submit = (data: Step1Data) => {
+    setFormState((prevState) => ({
+      ...prevState,
+      ...data,
+    }));
+    setFormStep(1);
+}
+
+
+
+
+useEffect(()=> {
+    console.log('here')
+    console.log(formData)
+    form.reset({
+        Project_Name: formData.Project_Name,
+        Path: formData.Path,
+        Project_Type: formData.Project_Type
+    })
+},[])
 
   return (
     <Form onSubmit={Step1Submit} form={form}>
