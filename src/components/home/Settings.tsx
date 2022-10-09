@@ -16,8 +16,8 @@ export default function Settings() {
       <Link to="/path_settings">
         <Button name="Path Settings" />
       </Link>
-      <Link to="/file_settings">
-        <Button name="File Settings" />
+      <Link to="/template_settings">
+        <Button name="Template Settings" />
       </Link>
     </Controls>
   );

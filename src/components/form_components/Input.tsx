@@ -1,7 +1,7 @@
 import { ComponentProps, forwardRef } from "react";
 import styled from "styled-components";
 import { FieldError } from "./Form";
-import {FormLabel} from "../styles/FormStyles"
+import {FormLabel} from "../../styles/FormStyles"
 
 interface InputProps {
   label: string;

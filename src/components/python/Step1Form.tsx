@@ -1,9 +1,9 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { z } from "zod";
-import { Form, useForm } from "../Form";
-import { Input } from "../Input";
+import { Form, useForm } from "../form_components/Form";
+import { Input } from "../form_components/Input";
 import { SelectBox } from "../shared/SelectBox";
-import SubmitButton from "../SubmitButton";
+import SubmitButton from "../form_components/SubmitButton";
 import { PythonFormState } from "./PythonForm";
 import { useForm as useHookForm } from "react-hook-form";
 
@@ -64,7 +64,7 @@ useEffect(()=> {
       />
       <SelectBox
         default_option="New Project"
-        options={["New Project", "Use Existing Template"]}
+        options={["Use Existing Template"]}
         select_name="Type of Project"
         {...form.register("Project_Type")}
       />

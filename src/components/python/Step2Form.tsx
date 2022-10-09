@@ -1,8 +1,8 @@
 import React from "react";
 import { z } from "zod";
-import { Form, useForm } from "../Form";
+import { Form, useForm } from "../form_components/Form";
 import {SelectBox} from "../shared/SelectBox";
-import SubmitButton from "../SubmitButton";
+import SubmitButton from "../form_components/SubmitButton";
 import { PythonFormState } from "./PythonForm";
 import styled from "styled-components";
 import FormButton from "../shared/FormButton";

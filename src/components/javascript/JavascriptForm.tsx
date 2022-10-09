@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import { Form, useForm } from "../Form";
-import { Input } from "../Input";
+import { Form, useForm } from "../form_components/Form";
+import { Input } from "../form_components/Input";
 import { z } from "zod";
-import { Checkbox } from "../Checkbox";
-import SubmitButton from "../SubmitButton";
+import { Checkbox } from "../form_components/Checkbox";
+import SubmitButton from "../form_components/SubmitButton";
 import { JavascriptSubmit } from "./FormSubmit";
-import VSCodeButton from "../VSCodeButton";
+import VSCodeButton from "../form_components/VSCodeButton";
 
 export const formSchema = z.object({
   Project_Name: z.string().min(1, "Please enter a name"),

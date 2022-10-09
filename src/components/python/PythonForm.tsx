@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import { Form, useForm } from "../Form";
-import { Input } from "../Input";
+import { Form, useForm } from "../form_components/Form";
+import { Input } from "../form_components/Input";
 import { z } from "zod";
-import { Checkbox } from "../Checkbox";
-import SubmitButton from "../SubmitButton";
+import { Checkbox } from "../form_components/Checkbox";
+import SubmitButton from "../form_components/SubmitButton";
 import { PythonSubmit } from "./PythonSubmit";
-import VSCodeButton from "../VSCodeButton";
+import VSCodeButton from "../form_components/VSCodeButton";
 import { SelectBox } from "../shared/SelectBox";
 import Step1Form from "./Step1Form";
 import Step2Form from "./Step2Form";

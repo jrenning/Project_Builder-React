@@ -1,9 +1,9 @@
 
-import "./components/Header";
-import Header from "./components/Header";
-import Language from "./components/Language";
-import Settings from "./components/Settings";
-import SubHeader from "./components/SubHeader";
+import "./components/shared/Header";
+import Header from "./components/shared/Header";
+import Language from "./components/home/Language";
+import Settings from "./components/home/Settings";
+import SubHeader from "./components/home/SubHeader";
 import Themes from "./components/Themes";
 import GlobalStyle from "./styles/globalStyles";
 import { ThemeProvider } from "styled-components";
@@ -21,7 +21,7 @@ function App() {
           <Themes />
           <SubHeader name="Language Selection" />
           <Language />
-          <SubHeader name="Path Settings" />
+          <SubHeader name="Extra Settings" />
           <Settings />
         </ThemeProvider>
     </>

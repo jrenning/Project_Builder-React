@@ -97,6 +97,13 @@ export const Form = <T extends FieldValues>({
   );
 }
 
+
+const ErrorMessage = styled.span`
+  color: #121212;
+  margin: 0;
+  font-weight: 600;
+`
+
 export function FieldError({ name }: { name?: string }) {
   // the useFormContext hook returns the current state of hook form.
   const {
@@ -109,5 +116,5 @@ export function FieldError({ name }: { name?: string }) {
 
   if (!error) return null;
   //@ts-ignore
-  return <span>{error.message}</span>;
+  return <ErrorMessage>{error.message}</ErrorMessage>;
 }

@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { openVsCode } from './shared/sharedCommands'
+import { openVsCode } from '../shared/sharedCommands'
 
 type Props = {
     path: string
