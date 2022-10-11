@@ -20,7 +20,7 @@ padding: .25rem .75rem;
 `
 type Props = {
     name: string
-    onClick: () => void
+    onClick: any
 }
 
 function FormButton({name, onClick}: Props) {

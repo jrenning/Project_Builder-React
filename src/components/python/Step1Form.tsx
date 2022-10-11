@@ -7,6 +7,7 @@ import SubmitButton from "../form_components/SubmitButton";
 import { PythonFormState } from "./PythonForm";
 import { useForm as useHookForm } from "react-hook-form";
 import FormButton from "../shared/FormButton";
+import {open} from "@tauri-apps/api/dialog"
 
 export const formSchema1 = z.object({
   Project_Name: z.string().min(1, "Please enter a name"),
@@ -31,6 +32,10 @@ function Step1Form({ formData, setFormState, setFormStep }: Props) {
   // whether or not a template should be asked for
   const [templateEnter, setTemplateEnter] = useState(false);
 
+  // path from dialog selection
+  // TODO add default path here
+  const [path, setPath] = useState("")
+
   const Step1Submit = (data: Step1Data) => {
     // if template wasn't selected update state and form step
     if (!data.Template) {
@@ -53,8 +58,21 @@ function Step1Form({ formData, setFormState, setFormStep }: Props) {
     }
   };
 
-  const openFileSelection = () => {
+  const openFileSelection = async (e: any) => {
     // TODO add file selection
+    e.preventDefault()
+    let result = await open({
+        defaultPath: '',
+        directory: true,
+        multiple: false
+    })
+    // if selection isn't null set as path
+    if (result != null && !Array.isArray(result) ) {
+        setPath(result)
+        // add result to form page for easy reference 
+        form.setValue("Path", result)
+    }
+
   }
 
   // keep form data in case you click back
@@ -79,6 +97,7 @@ function Step1Form({ formData, setFormState, setFormStep }: Props) {
         label="Path"
         type="text"
         placeholder="Path"
+        
         {...form.register("Path", {disabled: true})}
       />
       <SelectBox
