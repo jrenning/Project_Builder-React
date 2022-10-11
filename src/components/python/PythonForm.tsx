@@ -29,6 +29,7 @@ export interface PythonFormState extends Object {
     | "Initialize Git"
     | "Create repo and connect"
     | "Connect to existing repo";
+  Github_Repo?: string
   Packages: string | string[];
 };
 

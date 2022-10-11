@@ -1,29 +1,33 @@
-import React from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import { z } from "zod";
 import { Form, useForm } from "../form_components/Form";
-import {SelectBox} from "../shared/SelectBox";
+import { SelectBox } from "../shared/SelectBox";
 import SubmitButton from "../form_components/SubmitButton";
 import { PythonFormState } from "./PythonForm";
 import styled from "styled-components";
 import FormButton from "../shared/FormButton";
+import { Input } from "../form_components/Input";
+import { useWatch } from "react-hook-form";
 
 export const formSchema2 = z.object({
   Framework: z.enum(["Django", "Flask", "Vanilla"]),
   Package_Manager: z.enum(["Venv", "Poetry"]),
-  Git_Setup: z.enum([ "No Setup",
-    "Initialize Git"
-    ,"Create repo and connect"
-    ,"Connect to existing repo"]),
+  Git_Setup: z.enum([
+    "No Setup",
+    "Initialize Git",
+    "Create repo and connect",
+    "Connect to existing repo",
+  ]),
+  Github_Repo: z.string().optional(),
   Packages: z.string(),
 });
 
 const ButtonDiv = styled.div`
-    display: flex;
-    justify-content: space-between;
-    padding: .5rem ;
-    align-items: center;
-    
-`
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem;
+  align-items: center;
+`;
 
 type Step2Data = z.infer<typeof formSchema2>;
 
@@ -34,19 +38,32 @@ type Props = {
 
 function Step2Form({ setFormState, setFormStep }: Props) {
   const Step1Submit = (data: Step2Data) => {
-    setFormState(prevState => ({
-        ...prevState,
-        ...data
-    }))
+    setFormState((prevState) => ({
+      ...prevState,
+      ...data,
+    }));
   };
 
   const goBack = () => {
-    setFormStep(0)
-  }
+    setFormStep(0);
+  };
 
   const form = useForm({
     schema: formSchema2,
   });
+
+  const checkGithub = (data: ChangeEvent<HTMLSelectElement>) => {
+    if (data.target.value == "Create repo and connect" || data.target.value == "Connect to existing repo") {
+        setGithub(true)
+    }
+    else {
+        setGithub(false)
+    }
+  }
+
+  const [Github, setGithub] = useState(false);
+
+
   return (
     <Form form={form} onSubmit={(e) => Step1Submit(e)}>
       <SelectBox
@@ -61,8 +78,34 @@ function Step2Form({ setFormState, setFormStep }: Props) {
         select_name="Package Manager"
         {...form.register("Package_Manager")}
       />
+      <SelectBox
+        default_option="No Setup"
+        options={[
+          "Initialize Git",
+          "Create repo and connect",
+          "Connect to existing repo",
+        ]}
+        select_name="Git Setup"
+        {...form.register("Git_Setup")}
+        onChange={checkGithub}
+      />
+      {Github && (
+        <Input
+          label="Github Repo"
+          type="text"
+          placeholder="Github Repo"
+          {...form.register("Github_Repo")}
+        />
+      )}
+
+      <Input
+        label="Packages"
+        type="text"
+        placeholder="Packages"
+        {...form.register("Packages")}
+      />
       <ButtonDiv>
-        <FormButton name="Back" onClick={goBack}/>
+        <FormButton name="Back" onClick={goBack} />
         <SubmitButton name="Create Project" />
       </ButtonDiv>
     </Form>

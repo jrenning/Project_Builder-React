@@ -12,6 +12,7 @@ type SelectProps = {
   select_name: string
   default_option: string
   options: string[]
+  onChange: any
 }
 
 const SelectBoxDiv = styled.div`
@@ -27,12 +28,12 @@ const Select = styled.select`
 `;
 
 export const SelectBox = forwardRef<HTMLSelectElement, SelectProps>(function SelectBox(
-  {select_name,default_option,options}, ref
+  {select_name,default_option,options, onChange}, ref
 )  {
   return (
     <SelectBoxDiv>
     <FormLabel>{select_name}</FormLabel>
-    <Select>
+    <Select onChange={onChange}>
         <option>{default_option}</option>
         {options.map((option, index) => (
             <option key={index}>{option}</option>

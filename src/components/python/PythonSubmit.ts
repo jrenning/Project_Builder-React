@@ -1,30 +1,39 @@
-import { formSchema } from "./PythonForm";
+import { PythonFormState } from "./PythonForm";
 import { z } from "zod";
 import { PythonProjectCommands } from "./PythonCommands";
 import { handleError } from "../../utility/handleError";
 
-type Python = z.infer<typeof formSchema>;
-
-
-
 export const PythonSubmit = async (
-  { Project_Name, Git_Setup, Github_Link, Env, Packages }: Python,
+  {
+    Project_Name,
+    Git_Setup,
+    Path,
+    Framework,
+    Package_Manager,
+    Project_Type,
+    Packages,
+  }: PythonFormState,
   setPath: any
 ) => {
-
-  console.log(Env)
   return;
   const Project = new PythonProjectCommands(
     Project_Name,
     "C:\\Projects\\Python\\"
   );
 
-  if (Env) {
-    if (Env == "Poetry") {
-      await handleError(Project.InitialzePoetry(), "Poetry initialized...", "Poetry failed to initialize...")
-    }
-    else if (Env == "Venv") {
-      await handleError(Project.CreateVenvEnv(), "Venv env created...", "Venv env could not be created...")
+  if (Package_Manager) {
+    if (Package_Manager == "Poetry") {
+      await handleError(
+        Project.InitialzePoetry(),
+        "Poetry initialized...",
+        "Poetry failed to initialize..."
+      );
+    } else if (Package_Manager == "Venv") {
+      await handleError(
+        Project.CreateVenvEnv(),
+        "Venv env created...",
+        "Venv env could not be created..."
+      );
     }
   }
 
@@ -36,7 +45,7 @@ export const PythonSubmit = async (
 
   await handleError(Project.createFile("test.txt"), "Yeah", "Whoops");
 
-  if (Git_Setup) {
+  if (Git_Setup == "Initialize Git") {
     await handleError(
       Project.initializeGit(),
       "Git was initialized",
@@ -49,7 +58,7 @@ export const PythonSubmit = async (
     );
   }
 
-  if (Github_Link) {
+  if (Git_Setup == "Connect to existing repo") {
     await handleError(
       Project.linkToExistingGithub(Github_Link),
       "Github was linked",
