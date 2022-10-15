@@ -4,10 +4,9 @@ import { Form, useForm } from "../form_components/Form";
 import { SelectBox } from "../shared/SelectBox";
 import SubmitButton from "../form_components/SubmitButton";
 import { PythonFormState } from "./PythonForm";
-import styled from "styled-components";
 import FormButton from "../shared/FormButton";
+import { ButtonDiv } from "../../styles/FormStyles";
 import { Input } from "../form_components/Input";
-import { useWatch } from "react-hook-form";
 
 export const formSchema2 = z.object({
   Framework: z.enum(["Django", "Flask", "Vanilla"]),
@@ -22,12 +21,7 @@ export const formSchema2 = z.object({
   Packages: z.string(),
 });
 
-const ButtonDiv = styled.div`
-  display: flex;
-  justify-content: space-between;
-  padding: 0.5rem;
-  align-items: center;
-`;
+
 
 type Step2Data = z.infer<typeof formSchema2>;
 

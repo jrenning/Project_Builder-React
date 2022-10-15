@@ -1,55 +1,52 @@
 import React, { useState } from "react";
-import { Form, useForm } from "../form_components/Form";
-import { Input } from "../form_components/Input";
 import { z } from "zod";
-import { Checkbox } from "../form_components/Checkbox";
-import SubmitButton from "../form_components/SubmitButton";
 import { JavascriptSubmit } from "./FormSubmit";
 import VSCodeButton from "../form_components/VSCodeButton";
+import { useMultiStepForm } from "../../hooks/useMultiStepForm";
+import Step2FormJavascript from "./Step2FormJavascript";
 
-export const formSchema = z.object({
+export const overallFormSchemaJavascript = z.object({
+  Framework: z.enum(["Vanilla", "React (CRA)", "Next"]),
+  Package_Manager: z.enum(["npm", "yarn"]),
+  Git_Setup: z.enum([
+    "No Setup",
+    "Initialize Git",
+    "Create repo and connect",
+    "Connect to existing repo",
+  ]),
+  Github_Repo: z.string().optional(),
+  Packages: z.string(),
   Project_Name: z.string().min(1, "Please enter a name"),
-  Github_Link: z.string().optional(),
-  React: z.boolean().optional(),
-  Git_Setup: z.boolean().optional()
+  Project_Type: z.enum(["New Project", "Existing Template"]),
+  Path: z.string(),
+  Template: z.string().optional(),
 });
 
+
 export default function JavascriptForm() {
-  const form = useForm({
-    schema: formSchema,
-  });
 
 
+  const initialState = {
+    Framework: "Vanilla",
+    Package_Manager: "npm",
+    Git_Setup: 
+      "No Setup",
+    Github_Repo: "",
+    Packages: "",
+    Project_Name: "",
+    Project_Type: "New Project",
+    Path: "",
+    Template: "",
+  };
 
-  const [path, setPath] = useState("")
+  const { setFormState, setFormStep, formState, formStep, step1 } =
+    useMultiStepForm(overallFormSchemaJavascript, initialState);
+
+  const [path, setPath] = useState("");
+
   return (
     <>
-      <Form form={form} onSubmit={(e) => JavascriptSubmit(e, setPath)}>
-        <Input
-          label="Project Name"
-          type="text"
-          placeholder="Project Name"
-          {...form.register("Project_Name")}
-        />
-        <Input
-          label="Github Link"
-          type="text"
-          placeholder="Github Link"
-          {...form.register("Github_Link")}
-        ></Input>
-        <Checkbox
-          label="React"
-          type="checkbox"
-          {...form.register("React")}
-        ></Checkbox>
-        <Checkbox
-          label="Git Setup"
-          type="checkbox"
-          disabled={form.watch("React")}
-          {...form.register("Git_Setup")}
-        ></Checkbox>
-        <SubmitButton name="Create Project" />
-      </Form>
+      {formStep == 0 ? step1 : <Step2FormJavascript setFormState={setFormState} setFormStep={setFormStep}/>}
       <VSCodeButton path={path}></VSCodeButton>
     </>
   );

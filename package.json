@@ -9,6 +9,7 @@
     "tauri": "tauri"
   },
   "dependencies": {
+    "@emotion/react": "^11.10.4",
     "@hookform/resolvers": "^2.9.7",
     "@mui/icons-material": "^5.8.4",
     "@mui/material": "^5.9.3",

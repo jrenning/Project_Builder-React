@@ -15,7 +15,6 @@ export const PythonSubmit = async (
   }: PythonFormState,
   setPath: any
 ) => {
-  return;
   const Project = new PythonProjectCommands(
     Project_Name,
     "C:\\Projects\\Python\\"
@@ -58,13 +57,13 @@ export const PythonSubmit = async (
     );
   }
 
-  if (Git_Setup == "Connect to existing repo") {
-    await handleError(
-      Project.linkToExistingGithub(Github_Link),
-      "Github was linked",
-      "github err"
-    );
+  // if (Git_Setup == "Connect to existing repo") {
+  //   await handleError(
+  //     Project.linkToExistingGithub(),
+  //     "Github was linked",
+  //     "github err"
+  //   );
   }
 
-  setPath(Project.path);
-};
+  //setPath(Project.path);
+

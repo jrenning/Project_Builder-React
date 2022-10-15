@@ -1,54 +1,42 @@
-import React, { useEffect, useMemo, useState, ChangeEvent } from "react";
+import React, { useEffect, useState, ChangeEvent } from "react";
 import { z } from "zod";
-import { Form, useForm } from "../form_components/Form";
-import { Input } from "../form_components/Input";
+import { Form, useForm } from "./Form";
+import { Input } from "./Input";
 import { SelectBox } from "../shared/SelectBox";
-import SubmitButton from "../form_components/SubmitButton";
-import { PythonFormState } from "./PythonForm";
-import { useForm as useHookForm } from "react-hook-form";
+import SubmitButton from "./SubmitButton";
 import FormButton from "../shared/FormButton";
 import {open} from "@tauri-apps/api/dialog"
+import { overallOptions } from "../../hooks/useMultiStepForm";
 
 export const formSchema1 = z.object({
   Project_Name: z.string().min(1, "Please enter a name"),
   Project_Type: z.enum(["New Project", "Existing Template"]),
-  Path: z.string(),
+  Path: z.string({required_error: "Path is required"}),
   Template: z.string().optional(),
 });
 
 type Step1Data = z.infer<typeof formSchema1>;
 
 type Props = {
-  formData: PythonFormState;
-  setFormState: React.Dispatch<React.SetStateAction<PythonFormState>>;
+  formData: overallOptions;
+  setFormState: React.Dispatch<React.SetStateAction<any>>;
   setFormStep: React.Dispatch<React.SetStateAction<number>>;
+  submitHandler: ((data: any) => Promise<void>) | ((data: any) => void)
 };
 
-function Step1Form({ formData, setFormState, setFormStep }: Props) {
+function Step1Form({ formData, setFormState, setFormStep, submitHandler }: Props) {
   const form = useForm({
     schema: formSchema1,
   });
 
+  console.log(formData)
+
   // whether or not a template should be asked for
   const [templateEnter, setTemplateEnter] = useState(false);
 
-  // path from dialog selection
   // TODO add default path here
-  const [path, setPath] = useState("")
 
-  const Step1Submit = (data: Step1Data) => {
-    // if template wasn't selected update state and form step
-    if (!data.Template) {
-      setFormState((prevState) => ({
-        ...prevState,
-        ...data,
-      }));
-      setFormStep(1);
-    }
 
-    // if template is chosen create project
-    // TODO, call create project (template version?)
-  };
 
   const checkTemplate = (data: ChangeEvent<HTMLSelectElement>) => {
     if (data.target.value == "Use Existing Template") {
@@ -59,8 +47,8 @@ function Step1Form({ formData, setFormState, setFormStep }: Props) {
   };
 
   const openFileSelection = async (e: any) => {
-    // TODO add file selection
     e.preventDefault()
+    // select directory
     let result = await open({
         defaultPath: '',
         directory: true,
@@ -68,7 +56,6 @@ function Step1Form({ formData, setFormState, setFormStep }: Props) {
     })
     // if selection isn't null set as path
     if (result != null && !Array.isArray(result) ) {
-        setPath(result)
         // add result to form page for easy reference 
         form.setValue("Path", result)
     }
@@ -78,14 +65,15 @@ function Step1Form({ formData, setFormState, setFormStep }: Props) {
   // keep form data in case you click back
   useEffect(() => {
     form.reset({
-      Project_Name: formData.Project_Name,
-      Path: formData.Path,
-      Project_Type: formData.Project_Type,
+      Project_Name: formData.Project_Name && formData.Project_Name,
+      Path: formData.Path && formData.Path,
+      Project_Type: formData.Project_Type && formData.Project_Type,
+      Template: formData.Template && formData.Template
     });
   }, []);
 
   return (
-    <Form onSubmit={Step1Submit} form={form}>
+    <Form onSubmit={submitHandler} form={form}>
       <Input
         label="Project Name"
         type="text"

@@ -1,22 +1,12 @@
 import React, { useState } from "react";
-import { Form, useForm } from "../form_components/Form";
-import { Input } from "../form_components/Input";
 import { z } from "zod";
-import { Checkbox } from "../form_components/Checkbox";
-import SubmitButton from "../form_components/SubmitButton";
 import { PythonSubmit } from "./PythonSubmit";
 import VSCodeButton from "../form_components/VSCodeButton";
-import { SelectBox } from "../shared/SelectBox";
-import Step1Form from "./Step1Form";
+import Step1Form from "../form_components/Step1Form";
 import Step2Form from "./Step2Form";
+import { formSchema1 } from "../form_components/Step1Form";
+import { useMultiStepForm } from "../../hooks/useMultiStepForm";
 
-
-export const formSchema2 = z.object({
-  Framework: z.string(),
-  Package_Manager: z.string(),
-  Packages: z.string(),
-  Git_Setup: z.string(),
-});
 
 export interface PythonFormState extends Object {
   Project_Name: string;
@@ -29,15 +19,30 @@ export interface PythonFormState extends Object {
     | "Initialize Git"
     | "Create repo and connect"
     | "Connect to existing repo";
-  Github_Repo?: string
+  Github_Repo?: string;
   Packages: string | string[];
-};
+}
 
-const callSubmit = () => {};
+
+export const overallPythonFormSchema = z.object({
+  Project_Name: z.string().min(1, "Please enter a name"),
+  Project_Type: z.enum(["New Project", "Existing Template"]),
+  Path: z.string(),
+  Template: z.string().optional(),
+  Framework: z.enum(["Django", "Flask", "Vanilla"]),
+  Package_Manager: z.enum(["Venv", "Poetry"]),
+  Git_Setup: z.enum([
+    "No Setup",
+    "Initialize Git",
+    "Create repo and connect",
+    "Connect to existing repo",
+  ]),
+  Github_Repo: z.string().optional(),
+  Packages: z.string(),
+});
 
 export default function PythonForm() {
-
-  const [formState, setFormState] = useState<PythonFormState>({
+  const initialState = {
     Project_Name: "",
     Project_Type: "New Project",
     Path: "",
@@ -45,19 +50,17 @@ export default function PythonForm() {
     Package_Manager: "None",
     Git_Setup: "No Setup",
     Packages: [""],
-  });
+  };
 
-  const [formStep, setFormStep] = useState(0);
+  const { setFormState, setFormStep, formState, formStep, step1 } =
+    useMultiStepForm(overallPythonFormSchema, initialState);
 
-  const steps = [
-    <Step1Form formData={formState} setFormState={setFormState} setFormStep={setFormStep} />,
-    <Step2Form setFormState={setFormState} setFormStep={setFormStep}/>,
-  ];
-  
+
+
 
   return (
     <>
-        {steps[formStep]}
+      {formStep == 0 ? step1 : <Step2Form setFormState={setFormState} setFormStep={setFormStep}/>}
 
       <VSCodeButton path={formState.Path}></VSCodeButton>
     </>
