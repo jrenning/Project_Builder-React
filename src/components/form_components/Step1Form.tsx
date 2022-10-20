@@ -7,6 +7,8 @@ import SubmitButton from "./SubmitButton";
 import FormButton from "../shared/FormButton";
 import {open} from "@tauri-apps/api/dialog"
 import { overallOptions } from "../../hooks/useMultiStepForm";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export const formSchema1 = z.object({
   Project_Name: z.string().min(1, "Please enter a name"),
@@ -22,9 +24,10 @@ type Props = {
   setFormState: React.Dispatch<React.SetStateAction<any>>;
   setFormStep: React.Dispatch<React.SetStateAction<number>>;
   submitHandler: ((data: any) => Promise<void>) | ((data: any) => void)
+  children?: any
 };
 
-function Step1Form({ formData, setFormState, setFormStep, submitHandler }: Props) {
+function Step1Form({ formData, setFormState, setFormStep, submitHandler, children }: Props) {
   const form = useForm({
     schema: formSchema1,
   });
@@ -73,42 +76,44 @@ function Step1Form({ formData, setFormState, setFormStep, submitHandler }: Props
   }, []);
 
   return (
-    <Form onSubmit={submitHandler} form={form}>
-      <Input
-        label="Project Name"
-        type="text"
-        placeholder="Project Name"
-        {...form.register("Project_Name")}
-      />
-      <FormButton name="Choose Path" onClick={openFileSelection}/>
-      <Input
-        label="Path"
-        type="text"
-        placeholder="Path"
-        
-        {...form.register("Path", {disabled: true})}
-      />
-      <SelectBox
-        default_option="New Project"
-        options={["Use Existing Template"]}
-        select_name="Type of Project"
-        {...form.register("Project_Type")}
-        onChange={checkTemplate}
-      />
-      {templateEnter && (
-        <SelectBox
-          default_option=""
-          options={["Filler Template", "Filer Template"]}
-          select_name="Template"
-          {...form.register("Template")}
+    <>
+    {children}
+      <Form onSubmit={submitHandler} form={form}>
+        <Input
+          label="Project Name"
+          type="text"
+          placeholder="Project Name"
+          {...form.register("Project_Name")}
         />
-      )}
-      {templateEnter ? (
-        <SubmitButton name="Create Project" />
-      ) : (
-        <SubmitButton name="Next Step" />
-      )}
-    </Form>
+        <FormButton name="Choose Path" onClick={openFileSelection} />
+        <Input
+          label="Path"
+          type="text"
+          placeholder="Path"
+          {...form.register("Path", { disabled: true })}
+        />
+        <SelectBox
+          default_option="New Project"
+          options={["Use Existing Template"]}
+          select_name="Type of Project"
+          {...form.register("Project_Type")}
+          onChange={checkTemplate}
+        />
+        {templateEnter && (
+          <SelectBox
+            default_option=""
+            options={["Filler Template", "Filer Template"]}
+            select_name="Template"
+            {...form.register("Template")}
+          />
+        )}
+        {templateEnter ? (
+          <SubmitButton name="Create Project" />
+        ) : (
+          <SubmitButton name="Next Step" />
+        )}
+      </Form>
+    </>
   );
 }
 

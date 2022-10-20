@@ -8,22 +8,6 @@ import { formSchema1 } from "../form_components/Step1Form";
 import { useMultiStepForm } from "../../hooks/useMultiStepForm";
 
 
-export interface PythonFormState extends Object {
-  Project_Name: string;
-  Project_Type: "New Project" | "Existing Template";
-  Path: string;
-  Framework: "Django" | "Flask" | "Vanilla";
-  Package_Manager: "Poetry" | "Venv" | "None";
-  Git_Setup:
-    | "No Setup"
-    | "Initialize Git"
-    | "Create repo and connect"
-    | "Connect to existing repo";
-  Github_Repo?: string;
-  Packages: string | string[];
-}
-
-
 export const overallPythonFormSchema = z.object({
   Project_Name: z.string().min(1, "Please enter a name"),
   Project_Type: z.enum(["New Project", "Existing Template"]),
@@ -40,6 +24,8 @@ export const overallPythonFormSchema = z.object({
   Github_Repo: z.string().optional(),
   Packages: z.string(),
 });
+
+export type PythonFormState = z.infer<typeof overallPythonFormSchema>
 
 export default function PythonForm() {
   const initialState = {

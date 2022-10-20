@@ -7,6 +7,9 @@ import FormButton from "../shared/FormButton";
 import { SelectBox } from "../shared/SelectBox";
 import { JavascriptSubmit } from "./FormSubmit";
 import { overallFormSchemaJavascript } from "./JavascriptForm";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { z } from "zod";
 
 type Props = {
   setFormStep: any
@@ -27,9 +30,14 @@ function Step2FormJavascript({setFormStep}: Props) {
   });
 
 
-  const goBack = () => {
+  const goBack = (e: any) => {
+    e.preventDefault();
     setFormStep(0);
   };
+
+  const testSubmit = (e: any) => {
+    console.log(e)
+  }
 
   const checkGithub = (data: ChangeEvent<HTMLSelectElement>) => {
     if (
@@ -46,50 +54,52 @@ function Step2FormJavascript({setFormStep}: Props) {
   const [path, setPath] = useState("");
 
   return (
-    <Form form={form} onSubmit={(e) => JavascriptSubmit(e, setPath)}>
-      <SelectBox
-        select_name="Framework"
-        default_option="Vanilla"
-        options={["React (CRA)", "Next"]}
-        {...form.register("Framework")}
-      />
-      <SelectBox
-        default_option="Venv"
-        options={["npm", "yarn"]}
-        select_name="Package Manager"
-        {...form.register("Package_Manager")}
-      />
-      <SelectBox
-        default_option="No Setup"
-        options={[
-          "Initialize Git",
-          "Create repo and connect",
-          "Connect to existing repo",
-        ]}
-        select_name="Git Setup"
-        {...form.register("Git_Setup")}
-        onChange={checkGithub}
-      />
-      {Github && (
-        <Input
-          label="Github Repo"
-          type="text"
-          placeholder="Github Repo"
-          {...form.register("Github_Repo")}
+    <>
+      <Form form={form} onSubmit={testSubmit}>
+        <SelectBox
+          select_name="Framework"
+          default_option="Vanilla"
+          options={["React (CRA)", "Next"]}
+          {...form.register("Framework")}
         />
-      )}
+        <SelectBox
+          default_option="npm"
+          options={["None", "yarn"]}
+          select_name="Package Manager"
+          {...form.register("Package_Manager")}
+        />
+        <SelectBox
+          default_option="No Setup"
+          options={[
+            "Initialize Git",
+            "Create repo and connect",
+            "Connect to existing repo",
+          ]}
+          select_name="Git Setup"
+          {...form.register("Git_Setup")}
+          onChange={checkGithub}
+        />
+        {Github && (
+          <Input
+            label="Github Repo"
+            type="text"
+            placeholder="Github Repo"
+            {...form.register("Github_Repo")}
+          />
+        )}
 
-      <Input
-        label="Packages"
-        type="text"
-        placeholder="Packages"
-        {...form.register("Packages")}
-      />
-      <ButtonDiv>
-        <FormButton name="Back" onClick={goBack} />
-        <SubmitButton name="Create Project" />
-      </ButtonDiv>
-    </Form>
+        <Input
+          label="Packages"
+          type="text"
+          placeholder="Packages"
+          {...form.register("Packages")}
+        />
+        <ButtonDiv> 
+          <FormButton name="Back" onClick={goBack} />
+          <SubmitButton name="Create Project" />
+        </ButtonDiv>
+      </Form>
+    </>
   );
 }
 

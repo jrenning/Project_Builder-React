@@ -1,22 +1,32 @@
-import { formSchema } from "./JavascriptForm";
+import { overallFormSchemaJavascript } from "./JavascriptForm";
 import { z } from "zod";
 import { JavascriptProjectCommands } from "./JavascriptCommands";
 import { handleError } from "../../utility/handleError";
+import {  toast, useToast } from "react-toastify";
 
-type Javascript = z.infer<typeof formSchema>;
+type Javascript = z.infer<typeof overallFormSchemaJavascript>;
 
 export const JavascriptSubmit = async ({
   Project_Name,
   Git_Setup,
-  Github_Link,
-  React,
+  Github_Repo,
+  Package_Manager,
+  Framework,
+  Path,
+  Project_Type,
 }: Javascript, setPath: any) => {
   const Project = new JavascriptProjectCommands(
     Project_Name,
     "C:\\Projects\\Javascript\\"
   );
 
-  if (React) {
+
+  console.log("here")
+  toast.success("This is good")
+
+  return 
+
+  if (Framework == "React (CRA)") {
     await handleError(Project.CreateReactApp(), "Yeah R", "Whoops R");
     return;
   }
@@ -30,8 +40,8 @@ export const JavascriptSubmit = async ({
     await handleError(Project.createGitIgnore(), "Gitignore was created", "gitignore err");
   }
 
-  if (Github_Link) {
-    await handleError(Project.linkToExistingGithub(Github_Link),"Github was linked", "github err");
+  if (Github_Repo) {
+    await handleError(Project.linkToExistingGithub(Github_Repo),"Github was linked", "github err");
   }
 
   setPath(Project.path)

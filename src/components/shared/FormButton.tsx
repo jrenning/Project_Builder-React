@@ -26,7 +26,7 @@ type Props = {
 function FormButton({name, onClick}: Props) {
   return (
     <SubmitDiv>
-        <Button onClick={onClick}>{name}</Button>
+        <Button onClick={onClick} type="button">{name}</Button>
     </SubmitDiv>
   )
 }

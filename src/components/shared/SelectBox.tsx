@@ -33,7 +33,7 @@ export const SelectBox = forwardRef<HTMLSelectElement, SelectProps>(function Sel
   return (
     <SelectBoxDiv>
     <FormLabel>{select_name}</FormLabel>
-    <Select onChange={onChange}>
+    <Select onChange={onChange} ref={ref}>
         <option>{default_option}</option>
         {options.map((option, index) => (
             <option key={index}>{option}</option>

@@ -4,6 +4,7 @@ import Step1Form from "../components/form_components/Step1Form";
 import { overallPythonFormSchema } from "../components/python/PythonForm";
 import { formSchema1 } from "../components/form_components/Step1Form";
 
+
 const baseSchema = z.object({
   Project_Name: z.string().min(1, "Please enter a name"),
   Project_Type: z.enum(["New Project", "Existing Template"]),
@@ -38,7 +39,7 @@ export const overallFormOptions = z.object({
   Path: z.string(),
   Template: z.string().optional(),
   Framework: z.enum(["Django", "Flask", "Vanilla", "React (CRA)", "Next"]),
-  Package_Manager: z.enum(["Venv", "Poetry", "npm", "yarn"]),
+  Package_Manager: z.enum(["Venv", "Poetry", "npm", "yarn", "None"]),
   Git_Setup: z.enum([
     "No Setup",
     "Initialize Git",
@@ -46,7 +47,7 @@ export const overallFormOptions = z.object({
     "Connect to existing repo",
   ]),
   Github_Repo: z.string().optional(),
-  Packages: z.string(),
+  Packages: z.string().optional(),
 });
 
 
@@ -81,7 +82,7 @@ export function useMultiStepForm(formStateObject: ZodSchema<overallOptions>, ini
         setFormStep={setFormStep}
         formData={formState}
         submitHandler={Step1Submit}
-      />
+      ></Step1Form>
     );
 
 

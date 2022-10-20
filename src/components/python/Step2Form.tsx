@@ -18,7 +18,7 @@ export const formSchema2 = z.object({
     "Connect to existing repo",
   ]),
   Github_Repo: z.string().optional(),
-  Packages: z.string(),
+  Packages: z.string().optional(),
 });
 
 
@@ -26,16 +26,17 @@ export const formSchema2 = z.object({
 type Step2Data = z.infer<typeof formSchema2>;
 
 type Props = {
-  setFormState: React.Dispatch<React.SetStateAction<PythonFormState>>;
+  setFormState: React.Dispatch<React.SetStateAction<any>>;
   setFormStep: React.Dispatch<React.SetStateAction<number>>;
 };
 
 function Step2Form({ setFormState, setFormStep }: Props) {
   const Step1Submit = (data: Step2Data) => {
-    setFormState((prevState) => ({
+    setFormState((prevState: PythonFormState) => ({
       ...prevState,
       ...data,
     }));
+    console.log("worked")
   };
 
   const goBack = () => {
@@ -59,7 +60,7 @@ function Step2Form({ setFormState, setFormStep }: Props) {
 
 
   return (
-    <Form form={form} onSubmit={(e) => Step1Submit(e)}>
+    <Form form={form} onSubmit={Step1Submit}>
       <SelectBox
         select_name="Framework"
         default_option="Vanilla"

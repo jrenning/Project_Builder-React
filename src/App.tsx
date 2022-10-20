@@ -7,14 +7,15 @@ import SubHeader from "./components/home/SubHeader";
 import Themes from "./components/Themes";
 import GlobalStyle from "./styles/globalStyles";
 import { ThemeProvider } from "styled-components";
-import { BrowserRouter } from "react-router-dom";
 import {theme} from "./styles/Theme"
+import {ToastContainer, toast} from "react-toastify"
 
 
 
 function App() {
   return (
     <>
+    <ToastContainer />
         <ThemeProvider theme={theme}>
           <GlobalStyle />
           <Header name="Creation"/>
