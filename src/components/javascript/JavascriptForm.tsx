@@ -31,6 +31,8 @@ export const overallFormSchemaJavascript = z.object({
   Template: z.string().optional(),
 });
 
+export type OverallJavascriptObject = z.infer<typeof overallFormSchemaJavascript>
+
 export default function JavascriptForm() {
   const initialState = {
     Framework: "Vanilla",
@@ -57,6 +59,7 @@ export default function JavascriptForm() {
         <Step2FormJavascript
           setFormState={setFormState}
           setFormStep={setFormStep}
+          formState={formState}
         />
       )}
       <VSCodeButton path={path}></VSCodeButton>

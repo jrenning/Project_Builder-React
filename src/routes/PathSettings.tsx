@@ -5,20 +5,29 @@ import { theme } from "../styles/Theme";
 import JavascriptForm from "../components/javascript/JavascriptForm";
 import styled from 'styled-components';
 import PathForm from '../components/path/PathForm';
+import { FormLabel } from '../styles/FormStyles';
 
 
 const PathDiv = styled.div`
-  display: grid;
-  grid-template-columns: repeat(2,1fr);
-  gap: .3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`
+
+const PathTitle = styled.h1`
+  display: flex;
+  justify-content: center;
+  color: whitesmoke;
+  align-items: center;
 `
 
 function PathSettings() {
   return (
     <ThemeProvider theme={theme}>
       <Header name="Path Settings" arrow={true} link="/"></Header>
+      <PathTitle>Choose Default Path</PathTitle>
       <PathDiv>
-        <PathForm name="Python" />
+        <PathForm names={["Python", "Javascript", "Rust"]} />
       </PathDiv>
     </ThemeProvider>
   )

@@ -20,10 +20,6 @@ export const JavascriptSubmit = async ({
     "C:\\Projects\\Javascript\\"
   );
 
-
-  console.log("here")
-  toast.success("This is good")
-
   return 
 
   if (Framework == "React (CRA)") {
@@ -40,7 +36,7 @@ export const JavascriptSubmit = async ({
     await handleError(Project.createGitIgnore(), "Gitignore was created", "gitignore err");
   }
 
-  if (Github_Repo) {
+  if (typeof Github_Repo != 'undefined') {
     await handleError(Project.linkToExistingGithub(Github_Repo),"Github was linked", "github err");
   }
 
