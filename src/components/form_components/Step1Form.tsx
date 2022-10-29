@@ -9,6 +9,7 @@ import {open} from "@tauri-apps/api/dialog"
 import { overallOptions } from "../../hooks/useMultiStepForm";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import FolderSelection from "./FolderSelection";
 
 export const formSchema1 = z.object({
   Project_Name: z.string().min(1, "Please enter a name"),
@@ -49,21 +50,6 @@ function Step1Form({ formData, setFormState, setFormStep, submitHandler, childre
     }
   };
 
-  const openFileSelection = async (e: any) => {
-    e.preventDefault()
-    // select directory
-    let result = await open({
-        defaultPath: '',
-        directory: true,
-        multiple: false
-    })
-    // if selection isn't null set as path
-    if (result != null && !Array.isArray(result) ) {
-        // add result to form page for easy reference 
-        form.setValue("Path", result)
-    }
-
-  }
 
   // keep form data in case you click back
   useEffect(() => {
@@ -85,13 +71,7 @@ function Step1Form({ formData, setFormState, setFormStep, submitHandler, childre
           placeholder="Project Name"
           {...form.register("Project_Name")}
         />
-        <FormButton name="Choose Path" onClick={openFileSelection} />
-        <Input
-          label="Path"
-          type="text"
-          placeholder="Path"
-          {...form.register("Path", { disabled: true })}
-        />
+        <FolderSelection form={form}/>
         <SelectBox
           default_option="New Project"
           options={["Use Existing Template"]}

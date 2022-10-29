@@ -1,0 +1,1 @@
+export const languages = ["Python", "Javascript", "Rust"]
