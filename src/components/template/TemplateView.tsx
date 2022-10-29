@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState } from "react";
+import React, { ChangeEvent, ReactComponentElement, ReactNode, useState } from "react";
 import styled from "styled-components";
 import { FormLabel } from "../../styles/FormStyles";
 import { languages } from "../../utility/constants";
@@ -12,7 +12,17 @@ const LanguageSelect = styled.div`
   margin-top: 2rem;
 `;
 
-function TemplateView() {
+const TemplateViewDiv = styled.div`
+    padding: .25rem;
+    margin-bottom: 2rem;
+`
+
+type Props = {
+    BoxViewComponent: any
+}
+
+
+function TemplateView({BoxViewComponent}: Props) {
   const [templateLanguages, setTemplateLanguages] = useState(languages);
   const updateTemplateLanguage = (e: ChangeEvent<HTMLSelectElement>) => {
     if (e.target.value == "All") {
@@ -23,8 +33,7 @@ function TemplateView() {
   };
 
   return (
-    <div>
-      <>
+    <TemplateViewDiv>
         <LanguageSelect>
           <FormLabel />
           <SelectBox
@@ -35,10 +44,9 @@ function TemplateView() {
           />
         </LanguageSelect>
         {templateLanguages.map((language, index) => (
-          <TemplateBox language={language} key={index} />
+          <BoxViewComponent language={language} key={index} />
         ))}
-      </>
-    </div>
+    </TemplateViewDiv>
   );
 }
 

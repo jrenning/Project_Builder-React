@@ -22,16 +22,19 @@ const LandingText = styled.div`
 `;
 
 const BackLink = styled.div`
-  pointer-events: none;
-  height: 7px;
-  width: 7px;
-  background-color: white;
+  cursor: pointer;
+  text-decoration: none;
+  color: whitesmoke;
+  font-size: 16pt;
+  padding-right: 1rem;
+
 `
 
 const HeaderDiv = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  text-decoration: none;
 `
 
 
@@ -51,9 +54,7 @@ function Header({name, arrow, link}: Props) {
       <HeaderDiv>
         {arrow && link ? (
           <Link to={link}>
-            <BackLink>
-
-            </BackLink>
+            <BackLink>&#8592;</BackLink>
           </Link>
         ) : (
           ""

@@ -42,6 +42,7 @@ const testTemplateLocations = ["https://jrenning.gihub.com/", "C:/home/desktop/d
 
 const retrieveTemplates = () => {
     // TODO get templates here
+    // TODO add truncating for long paths/urls
 }
 
   return (
