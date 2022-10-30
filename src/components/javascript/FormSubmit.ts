@@ -36,9 +36,9 @@ export const JavascriptSubmit = async ({
     await handleError(Project.createGitIgnore(), "Gitignore was created", "gitignore err");
   }
 
-  if (typeof Github_Repo != 'undefined') {
-    await handleError(Project.linkToExistingGithub(Github_Repo),"Github was linked", "github err");
-  }
+  // Github_Repo && (
+  //   await handleError(Project.linkToExistingGithub(Github_Repo),"Github was linked", "github err");
+  // )
 
   setPath(Project.path)
 

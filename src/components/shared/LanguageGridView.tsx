@@ -2,8 +2,8 @@ import React, { ChangeEvent, ReactComponentElement, ReactNode, useState } from "
 import styled from "styled-components";
 import { FormLabel } from "../../styles/FormStyles";
 import { languages } from "../../utility/constants";
-import { SelectBox } from "../shared/SelectBox";
-import TemplateBox from "./TemplateBox";
+import { SelectBox } from "./SelectBox";
+import TemplateBox from "../template/TemplateBox";
 
 const LanguageSelect = styled.div`
   display: flex;

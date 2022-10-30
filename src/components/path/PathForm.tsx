@@ -1,4 +1,5 @@
 import { open } from "@tauri-apps/api/dialog";
+import { invoke } from "@tauri-apps/api/tauri";
 import React, { ChangeEvent, useState } from "react";
 import { z } from "zod";
 import FolderSelection from "../form_components/FolderSelection";
@@ -17,13 +18,17 @@ const formSchema = z.object({
   Path: z.string(),
 });
 
+type FormData = z.infer<typeof formSchema>
+
 function PathForm({ names }: Props) {
   const form = useForm({
     schema: formSchema,
   });
 
-  const testSubmit = (e: any) => {
-    console.log(e);
+  const testSubmit = ({Language, Path}: FormData) => {
+    console.log(Language)
+    //invoke("set_path_data", {name: `${Language}_path`, path: Path})
+    console.log("path is added")
   };
 
   const [Language, setLanguage] = useState("");
@@ -32,6 +37,8 @@ function PathForm({ names }: Props) {
     // TODO update language path
   };
 
+  const {register} = form
+
 
   return (
     <Form form={form} onSubmit={testSubmit}>
@@ -39,7 +46,8 @@ function PathForm({ names }: Props) {
         select_name="Language"
         default_option="Select Language"
         options={names}
-        {...form.register("Language", {onChange: changeLanguage})}
+        onChange={changeLanguage}
+        form={form}
       />
       <FolderSelection form={form}/>
       <SubmitButton name="Set Path" />

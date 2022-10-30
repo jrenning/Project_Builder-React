@@ -36,6 +36,7 @@ function Step2Form({ setFormState, setFormStep }: Props) {
       ...prevState,
       ...data,
     }));
+    console.log(data)
   };
 
   const goBack = () => {

@@ -4,7 +4,7 @@ import { ThemeProvider } from "styled-components";
 import { theme } from "../styles/Theme";
 import TemplateForm from '../components/template/TemplateForm';
 import SubHeader from '../components/home/SubHeader';
-import TemplateView from '../components/template/TemplateView';
+import TemplateView from '../components/shared/LanguageGridView';
 import TemplateBox from '../components/template/TemplateBox';
 
 function TemplateSettings() {

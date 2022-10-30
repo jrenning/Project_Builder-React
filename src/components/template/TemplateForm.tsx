@@ -23,8 +23,9 @@ function TemplateForm() {
     settemplateType(e.target.value);
   };
 
-  const templateSubmit = () => {
+  const templateSubmit = (e: any) => {
     // TODO add adding templates
+    console.log(e)
   };
 
   return (

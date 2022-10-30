@@ -6,7 +6,7 @@ import JavascriptForm from "../components/javascript/JavascriptForm";
 import styled from 'styled-components';
 import PathForm from '../components/path/PathForm';
 import { FormLabel } from '../styles/FormStyles';
-import TemplateView from '../components/template/TemplateView';
+import TemplateView from '../components/shared/LanguageGridView';
 import PathBox from '../components/path/PathBox';
 
 
