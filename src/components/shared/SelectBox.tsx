@@ -22,16 +22,15 @@ const Select = styled.select`
   font-size: large;
 `;
 
-export const SelectBox = forwardRef<HTMLSelectElement, SelectProps>(
-  function SelectBox({ select_name, default_option, options, control }, ref) {
+export const SelectBox = ({ select_name, default_option, options, control }: SelectProps) => {
     return (
       <Controller
         name={select_name}
         control={control}
-        render={({ field: { onChange, ref } }) => (
+        render={({ field}) => (
           <SelectBoxDiv>
             <FormLabel>{select_name}</FormLabel>
-            <Select ref={ref}>
+            <Select {...field} onChange={(e)=> field.onChange(e.target.value)}>
               <option>{default_option}</option>
               {options.map((option, index) => (
                 <option key={index}>{option}</option>
@@ -42,4 +41,3 @@ export const SelectBox = forwardRef<HTMLSelectElement, SelectProps>(
       />
     );
   }
-);
