@@ -2,8 +2,6 @@ import React, { ChangeEvent, ReactComponentElement, ReactNode, useState } from "
 import styled from "styled-components";
 import { FormLabel } from "../../styles/FormStyles";
 import { languages } from "../../utility/constants";
-import { SelectBox } from "./SelectBox";
-import TemplateBox from "../template/TemplateBox";
 
 const LanguageSelect = styled.div`
   display: flex;
@@ -36,12 +34,12 @@ function TemplateView({BoxViewComponent}: Props) {
     <TemplateViewDiv>
         <LanguageSelect>
           <FormLabel />
-          <SelectBox
-            select_name="Choose Lanaguage"
-            options={languages}
-            default_option="All"
-            onChange={updateTemplateLanguage}
-          />
+          <select>
+            <option>All</option>
+            {languages.map((language, index) => (
+              <option key={index}>{language}</option>
+            ))}
+          </select>
         </LanguageSelect>
         {templateLanguages.map((language, index) => (
           <BoxViewComponent language={language} key={index} />

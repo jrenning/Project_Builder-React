@@ -65,13 +65,13 @@ function Step2Form({ setFormState, setFormStep }: Props) {
         select_name="Framework"
         default_option="Vanilla"
         options={["Django", "Flask", "Vanilla"]}
-        {...form.register("Framework")}
+        control={form.control}
       />
       <SelectBox
         default_option="Venv"
         options={["Poetry", "Venv", "None"]}
         select_name="Package Manager"
-        {...form.register("Package_Manager")}
+        control={form.control}
       />
       <SelectBox
         default_option="No Setup"
@@ -81,8 +81,7 @@ function Step2Form({ setFormState, setFormStep }: Props) {
           "Connect to existing repo",
         ]}
         select_name="Git Setup"
-        {...form.register("Git_Setup")}
-        onChange={checkGithub}
+        control={form.control}
       />
       {Github && (
         <Input

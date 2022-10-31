@@ -40,7 +40,7 @@ function TemplateForm() {
         select_name="Location of Template"
         options={["Github Link"]}
         default_option=" Local Folder"
-        onChange={updateTemplateType}
+        control={form.control}
       />
       {templateType == "Local Folder" ? (
         <FolderSelection form={form} />

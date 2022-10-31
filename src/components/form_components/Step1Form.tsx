@@ -63,7 +63,7 @@ function Step1Form({ formData, setFormState, setFormStep, submitHandler, childre
 
   return (
     <>
-    {children}
+      {children}
       <Form onSubmit={submitHandler} form={form}>
         <Input
           label="Project Name"
@@ -71,20 +71,19 @@ function Step1Form({ formData, setFormState, setFormStep, submitHandler, childre
           placeholder="Project Name"
           {...form.register("Project_Name")}
         />
-        <FolderSelection form={form}/>
+        <FolderSelection form={form} />
         <SelectBox
           default_option="New Project"
           options={["Use Existing Template"]}
           select_name="Type of Project"
-          {...form.register("Project_Type")}
-          onChange={checkTemplate}
+          control={form.control}
         />
         {templateEnter && (
           <SelectBox
             default_option=""
             options={["Filler Template", "Filer Template"]}
             select_name="Template"
-            {...form.register("Template")}
+            control={form.control}
           />
         )}
         {templateEnter ? (

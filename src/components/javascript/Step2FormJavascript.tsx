@@ -74,13 +74,13 @@ function Step2FormJavascript({setFormStep, setFormState, formState}: Props) {
           select_name="Framework"
           default_option="Vanilla"
           options={["React (CRA)", "Next"]}
-          {...form.register("Framework")}
+          control={form.control}
         />
         <SelectBox
           default_option="npm"
           options={["None", "yarn"]}
           select_name="Package Manager"
-          {...form.register("Package_Manager")}
+          control={form.control}
         />
         <SelectBox
           default_option="No Setup"
@@ -90,8 +90,8 @@ function Step2FormJavascript({setFormStep, setFormState, formState}: Props) {
             "Connect to existing repo",
           ]}
           select_name="Git Setup"
-          {...form.register("Git_Setup")}
-          onChange={checkGithub}
+          control={form.control}
+          // onChange={checkGithub}
         />
         {Github && (
           <Input

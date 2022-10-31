@@ -1,14 +1,14 @@
 import React, { forwardRef } from "react";
 import styled from "styled-components";
 import { FormLabel } from "../../styles/FormStyles";
-import { UseFormReturn } from "react-hook-form";
+import { UseFormReturn, useFormContext, Controller } from "react-hook-form";
+import { FieldError } from "../form_components/Form";
 
 type SelectProps = {
   select_name: string;
   default_option: string;
   options: string[];
-  onChange: any;
-  form?: any;
+  control: any
 };
 
 const SelectBoxDiv = styled.div`
@@ -23,24 +23,23 @@ const Select = styled.select`
 `;
 
 export const SelectBox = forwardRef<HTMLSelectElement, SelectProps>(
-  function SelectBox(
-    { select_name, default_option, options, onChange, form },
-    ref
-  ) {
+  function SelectBox({ select_name, default_option, options, control }, ref) {
     return (
-      <SelectBoxDiv>
-        <FormLabel>{select_name}</FormLabel>
-        <Select
-          onChange={onChange}
-          ref={ref}
-          {...form.register(select_name, { onChange: onChange })}
-        >
-          <option>{default_option}</option>
-          {options.map((option, index) => (
-            <option key={index}>{option}</option>
-          ))}
-        </Select>
-      </SelectBoxDiv>
+      <Controller
+        name={select_name}
+        control={control}
+        render={({ field: { onChange, ref } }) => (
+          <SelectBoxDiv>
+            <FormLabel>{select_name}</FormLabel>
+            <Select ref={ref}>
+              <option>{default_option}</option>
+              {options.map((option, index) => (
+                <option key={index}>{option}</option>
+              ))}
+            </Select>
+          </SelectBoxDiv>
+        )}
+      />
     );
   }
 );

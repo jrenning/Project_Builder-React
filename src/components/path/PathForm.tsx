@@ -37,17 +37,15 @@ function PathForm({ names }: Props) {
     // TODO update language path
   };
 
-  const {register} = form
-
 
   return (
     <Form form={form} onSubmit={testSubmit}>
+      {console.log(form.getFieldState("Language"))}
       <SelectBox
         select_name="Language"
         default_option="Select Language"
         options={names}
-        onChange={changeLanguage}
-        form={form}
+        control={form.control}
       />
       <FolderSelection form={form}/>
       <SubmitButton name="Set Path" />
