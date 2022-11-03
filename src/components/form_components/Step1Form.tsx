@@ -79,14 +79,17 @@ function Step1Form({ formData, setFormState, setFormStep, submitHandler, childre
         <SelectBox
           default_option="New Project"
           options={["Use Existing Template"]}
-          select_name="Type of Project"
+          select_name="Project_Type"
+          select_label="Type of Project"
           control={form.control}
+          onChangeEvent={checkTemplate}
         />
         {templateEnter && (
           <SelectBox
             default_option=""
             options={template_names}
             select_name="Template"
+            select_label="Template"
             control={form.control}
           />
         )}
