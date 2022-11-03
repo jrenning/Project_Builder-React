@@ -34,7 +34,8 @@ function TemplateView({BoxViewComponent}: Props) {
     <TemplateViewDiv>
         <LanguageSelect>
           <FormLabel />
-          <select>
+          {/* Select Box component unnecessary here  */}
+          <select onChange={updateTemplateLanguage}>
             <option>All</option>
             {languages.map((language, index) => (
               <option key={index}>{language}</option>

@@ -27,7 +27,7 @@ function PathForm({ names }: Props) {
 
   const testSubmit = ({Language, Path}: FormData) => {
     console.log(Language)
-    //invoke("set_path_data", {name: `${Language}_path`, path: Path})
+    invoke("set_path_data", {name: `${Language}_path`, path: Path})
     console.log("path is added")
   };
 
@@ -40,7 +40,6 @@ function PathForm({ names }: Props) {
 
   return (
     <Form form={form} onSubmit={testSubmit}>
-      {console.log(form.getFieldState("Language"))}
       <SelectBox
         select_name="Language"
         default_option="Select Language"

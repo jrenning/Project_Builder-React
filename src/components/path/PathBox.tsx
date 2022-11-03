@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { useDefaultPath } from "../../hooks/useDefaultPaths";
 
 type Props = {
   language: string;
@@ -32,20 +33,13 @@ const PathLocationCell = styled.div`
 
 
 function PathBox({ language }: Props) {
-  const testTemplateLocations = [
-    "C://pppp",
-    "C:/home/desktop/desktop/folder/folder",
-  ];
-
-  const retrievePaths = () => {
-    // TODO get paths
-  };
+  const testPaths = useDefaultPath(language)
 
   return (
     <div>
       <LanguageGrid>
         <PathNameCell>{language}</PathNameCell>
-        <PathLocationCell>{testTemplateLocations[0]}</PathLocationCell>
+        <PathLocationCell>{testPaths}</PathLocationCell>
       </LanguageGrid>
     </div>
   );

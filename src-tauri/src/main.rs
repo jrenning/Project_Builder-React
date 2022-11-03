@@ -6,7 +6,7 @@
 #[allow(non_snake_case)]
 
 use std::fs::File;
-use std::fs::create_dir;
+use std::{fs::create_dir, path};
 use std::path::Path;
 use serde_derive::{Deserialize, Serialize};
 mod storage;
@@ -38,14 +38,26 @@ fn make_dir(dir: String, path: String) -> bool{
 }
 
 
+pub fn initialize_settings_files() {
+  // TODO add error checking
+  let settings_dir = storage::get_settings_dir().unwrap().join("settings.json");
+  // Pathbuf doesn't have copy so use clone here 
+  let path_check = settings_dir.clone();
+  // if file doesn't exist create it 
+  if Path::new(&path_check.into_os_string().into_string().unwrap()).exists() {
+    // consider creating settings file to fail to warrant a panic 
+    File::create(&settings_dir);
+  }
 
+}
 
 fn main() {
+  //initialize_settings_files();
 
 
   tauri::Builder::default()
     // This is where you pass in your commands
-    .invoke_handler(tauri::generate_handler![write_file, make_dir,storage::set_path_data,storage::get_path_data])
+    .invoke_handler(tauri::generate_handler![write_file, make_dir,storage::set_path_data,storage::get_path_data, storage::get_template_data, storage::set_template_data])
     .run(tauri::generate_context!())
     .expect("failed to run app");
 }
