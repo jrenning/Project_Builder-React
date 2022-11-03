@@ -47,7 +47,7 @@ export default function JavascriptForm() {
   };
 
   const { setFormState, setFormStep, formState, formStep, step1 } =
-    useMultiStepForm(overallFormSchemaJavascript, initialState);
+    useMultiStepForm(overallFormSchemaJavascript, initialState, "Javascript");
 
   const [path, setPath] = useState("");
 

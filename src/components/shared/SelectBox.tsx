@@ -6,6 +6,7 @@ import { FieldError } from "../form_components/Form";
 
 type SelectProps = {
   select_name: string;
+  select_label?: string;
   default_option: string;
   options: string[];
   control: any
@@ -22,14 +23,14 @@ const Select = styled.select`
   font-size: large;
 `;
 
-export const SelectBox = ({ select_name, default_option, options, control }: SelectProps) => {
+export const SelectBox = ({ select_name, select_label, default_option, options, control }: SelectProps) => {
     return (
       <Controller
         name={select_name}
         control={control}
         render={({ field}) => (
           <SelectBoxDiv>
-            <FormLabel>{select_name}</FormLabel>
+            <FormLabel>{select_label}</FormLabel>
             <Select {...field} onChange={(e)=> field.onChange(e.target.value)}>
               <option>{default_option}</option>
               {options.map((option, index) => (

@@ -10,6 +10,7 @@ import { overallOptions } from "../../hooks/useMultiStepForm";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import FolderSelection from "./FolderSelection";
+import { useTemplates } from "../../hooks/useTemplates";
 
 export const formSchema1 = z.object({
   Project_Name: z.string().min(1, "Please enter a name"),
@@ -26,19 +27,22 @@ type Props = {
   setFormStep: React.Dispatch<React.SetStateAction<number>>;
   submitHandler: ((data: any) => Promise<void>) | ((data: any) => void)
   children?: any
+  language: string
 };
 
-function Step1Form({ formData, setFormState, setFormStep, submitHandler, children }: Props) {
+function Step1Form({ formData, setFormState, setFormStep, submitHandler, children, language }: Props) {
   const form = useForm({
     schema: formSchema1,
   });
 
-  console.log(formData)
 
   // whether or not a template should be asked for
   const [templateEnter, setTemplateEnter] = useState(false);
 
   // TODO add default path here
+
+
+  const {template_names, template_locations} = useTemplates(language);
 
 
 
@@ -81,7 +85,7 @@ function Step1Form({ formData, setFormState, setFormStep, submitHandler, childre
         {templateEnter && (
           <SelectBox
             default_option=""
-            options={["Filler Template", "Filer Template"]}
+            options={template_names}
             select_name="Template"
             control={form.control}
           />

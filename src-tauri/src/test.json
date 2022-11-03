@@ -1,13 +1,1 @@
-{
-  "python": {
-    "templates": [{ "name": "Template 1", "location": "github" }]
-  },
-
-  "javascript": {
-    "templates": [{ "name": "", "location": "" }]
-  },
-
-  "rust": {
-    "templates": [{ "name": "", "location": "" }]
-  }
-}
+{"python":{"templates":[{"name":"Template 1","location":"github"},{"name":"New_Template","location":"C:\\Projects\\Python\\Django"},{"name":"Icarus","location":"C:\\Users\\jacka\\OneDrive\\Desktop\\DS_AL"}]},"javascript":{"templates":[{"name":"","location":""}]},"rust":{"templates":[{"name":"","location":""}]}}

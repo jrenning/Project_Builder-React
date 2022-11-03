@@ -101,7 +101,11 @@ pub fn get_template_data(language: String) -> Result<TemplateData, String> {
     // TODO error checking
     let test = read_in_template_file();
 
+    println!("{:?}", test);
+
     let templates: &Vec<Template> = &test[&language].templates;
+
+    println!("{:?}",templates);
 
     let mut template_names = Vec::new();
     let mut template_locations = Vec::new();
@@ -135,7 +139,7 @@ pub fn set_template_data(language: String, name: String, location: String) -> Re
 
     println!("{:?}", json_data);
 
-    fs::write("test.json",json_data).unwrap();
+    fs::write("C:\\Projects\\Tauri\\project-builder\\src-tauri\\src\\test.json",json_data).unwrap();
 
 
 

@@ -1,3 +1,4 @@
+import { invoke } from "@tauri-apps/api";
 import React, { ChangeEvent, useState } from "react";
 import { z } from "zod";
 import FolderSelection from "../form_components/FolderSelection";
@@ -9,9 +10,12 @@ import { SelectBox } from "../shared/SelectBox";
 function TemplateForm() {
   const templateFormSchema = z.object({
     Template_Name: z.string().min(1, "Please enter a template name"),
+    Language: z.enum(["Python", "Javascript", "Rust"]),
     Path: z.string().optional(),
     Github_Link: z.string().optional(),
   });
+
+  type templateData = z.infer<typeof templateFormSchema>;
 
   const form = useForm({
     schema: templateFormSchema,
@@ -23,9 +27,28 @@ function TemplateForm() {
     settemplateType(e.target.value);
   };
 
-  const templateSubmit = (e: any) => {
+  const templateSubmit = ({
+    Path,
+    Template_Name,
+    Github_Link,
+    Language,
+  }: templateData) => {
+
     // TODO add adding templates
-    console.log(e)
+    // lowercase language name to avoid key error
+    Path
+      ? invoke("set_template_data", {
+          language: Language.toLowerCase(),
+          name: Template_Name,
+          location: Path,
+        })
+      : Github_Link
+      ? invoke("set_template_data", {
+          language: Language,
+          name: Template_Name,
+          location: Github_Link,
+        })
+      : "";
   };
 
   return (
@@ -37,7 +60,15 @@ function TemplateForm() {
         {...form.register("Template_Name")}
       />
       <SelectBox
-        select_name="Location of Template"
+        select_label="Template Language"
+        select_name="Language"
+        options={["Python", "Javascript", "Rust"]}
+        default_option="Select Language"
+        control={form.control}
+      />
+      <SelectBox
+        select_label="Location of Template"
+        select_name=""
         options={["Github Link"]}
         default_option=" Local Folder"
         control={form.control}
@@ -46,7 +77,7 @@ function TemplateForm() {
         <FolderSelection form={form} />
       ) : (
         <>
-        <br />
+          <br />
           <Input
             label="Github Link"
             type="text"

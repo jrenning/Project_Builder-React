@@ -58,7 +58,7 @@ export type overallOptions = z.infer<typeof overallFormOptions>;
 
 type Step1Schema = z.infer<typeof formSchema1>;
 
-export function useMultiStepForm(formStateObject: ZodSchema<overallOptions>, initialState: any) {
+export function useMultiStepForm(formStateObject: ZodSchema<overallOptions>, initialState: any, language: string) {
 
   type FormState = z.infer<typeof formStateObject>
   const [formState, setFormState] = useState<FormState>(initialState);
@@ -72,7 +72,6 @@ export function useMultiStepForm(formStateObject: ZodSchema<overallOptions>, ini
         ...data,
       }));
       setFormStep(1);
-      console.log(formState)
     }
   }
 
@@ -82,6 +81,7 @@ export function useMultiStepForm(formStateObject: ZodSchema<overallOptions>, ini
         setFormStep={setFormStep}
         formData={formState}
         submitHandler={Step1Submit}
+        language={language}
       ></Step1Form>
     );
 
