@@ -21,10 +21,6 @@ export const PythonSubmit = async (
   const project_toast = toast("Creating project...")
   const Project = new PythonProjectCommands(Project_Name, Path, project_toast);
 
-  console.log(Packages)
-
-
-  return
 
   await handleError(Project.createProjectDirectory(), "Yeah", "Whoops");
 
@@ -55,8 +51,14 @@ export const PythonSubmit = async (
       // TODO add framework code
     }
 
-    if (Packages) {
-      // TODO add split of packages and adding using poetry
+    if (Packages && Package_Manager == "Poetry") {
+      let packages = Packages.split(",")
+      packages = packages.map((pack)=> {
+        return pack.trim()
+      })
+      packages.forEach(async (pack)=> {
+        await Project.AddPoetryPackage(pack)
+      })
     }
 
     Project.GitSetup(Git_Setup);

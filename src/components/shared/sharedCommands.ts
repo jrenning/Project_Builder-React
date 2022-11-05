@@ -58,7 +58,8 @@ export class BaseProjectCommands {
       return false;
     }
 
-    this.path = this.path + this.name + "\\";
+    this.path = this.path + "\\" + this.name + "\\";
+    console.log(this.path)
     this.setToastMessage("Project Directory created successfully...");
 
     return !!dir_creation;

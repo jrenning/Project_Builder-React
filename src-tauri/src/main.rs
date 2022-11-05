@@ -20,14 +20,14 @@ fn write_file(fileName: String, dir: String) -> bool {
   if Path::new(&file_path).exists() {
     return false;
   }
-  let _file = File::create(file_path).expect("File could not be created");
+  let _file = File::create(&file_path).expect(&file_path);
   return true;
 }
 
 
 #[tauri::command]
 fn make_dir(dir: String, path: String) -> bool{
-  let file_path = format!("{}{}", path, dir);
+  let file_path = format!("{}//{}", path, dir);
   // if file already exists do nothing 
   if Path::new(&file_path).exists() {
     return false;
