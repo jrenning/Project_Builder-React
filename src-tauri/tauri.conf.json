@@ -66,6 +66,11 @@
             "name": "cargo-new",
             "cmd": "cargo",
             "args": ["new", { "validator": "\\S+" }]
+          },
+          {
+            "name": "git-clone",
+            "cmd": "git",
+            "args": ["clone", {"validator": "\\S+"}]
           }
         ]
       }

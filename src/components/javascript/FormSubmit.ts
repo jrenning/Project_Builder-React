@@ -14,13 +14,18 @@ export const JavascriptSubmit = async ({
   Framework,
   Path,
   Project_Type,
+  Template
 }: Javascript, setPath: any) => {
   const Project = new JavascriptProjectCommands(
     Project_Name,
-    "C:\\Projects\\Javascript\\"
+    Path
   );
 
-  return 
+
+  if (Template) {
+    Project.useTemplate(Template, "Javascript")
+  }
+  else if (Project_Type == "New Project") {
 
   if (Framework == "React (CRA)") {
     await handleError(Project.CreateReactApp(), "Yeah R", "Whoops R");
@@ -29,16 +34,14 @@ export const JavascriptSubmit = async ({
 
   await handleError(Project.createProjectDirectory(), "Yeah", "Whoops");
 
-  await handleError(Project.createFile("test.txt"), "Yeah", "Whoops");
+  await handleError(Project.createFile("app.js"), "Yeah", "Whoops");
 
-  if (Git_Setup) {
-    await handleError(Project.initializeGit(), "Git was initialized","git i err");
-    await handleError(Project.createGitIgnore(), "Gitignore was created", "gitignore err");
+  if (Git_Setup != "No Setup") {
+    Project.GitSetup(Git_Setup)
+    
   }
 
-  // Github_Repo && (
-  //   await handleError(Project.linkToExistingGithub(Github_Repo),"Github was linked", "github err");
-  // )
+ }
 
   setPath(Project.path)
 

@@ -14,7 +14,7 @@ export const overallPythonFormSchema = z.object({
   Path: z.string(),
   Template: z.string().optional(),
   Framework: z.enum(["Django", "Flask", "Vanilla"]),
-  Package_Manager: z.enum(["Venv", "Poetry"]),
+  Package_Manager: z.enum(["Venv", "Poetry", "None"]),
   Git_Setup: z.enum([
     "No Setup",
     "Initialize Git",

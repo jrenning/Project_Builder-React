@@ -147,6 +147,17 @@ pub fn set_template_data(language: String, name: String, location: String) -> Re
     Ok(())
 }
 
+#[tauri::command]
+pub fn get_template_path(name: String, language: String) -> String {
+    let template_data: TemplateData = get_template_data(language).expect("Template data couldn't be retrieved");
+    let names = template_data.template_names;
+    let locations = template_data.template_locations;
+
+    let index = names.iter().position(|r| r == &name).unwrap();
+
+    return locations[index].clone();
+}
+
 
 #[tauri::command]
 pub async fn set_path_data(name: String, path: serde_json::Value) -> bool {

@@ -3,13 +3,12 @@
   windows_subsystem = "windows"
 )]
 
-#[allow(non_snake_case)]
-
 use std::fs::File;
 use std::{fs::create_dir, path};
 use std::path::Path;
 use serde_derive::{Deserialize, Serialize};
 mod storage;
+mod files;
 
 // tauri and rust seem to have an error that doesn't allow underscore names to be passed
 // to the frontend so camelcase is used 
@@ -57,7 +56,9 @@ fn main() {
 
   tauri::Builder::default()
     // This is where you pass in your commands
-    .invoke_handler(tauri::generate_handler![write_file, make_dir,storage::set_path_data,storage::get_path_data, storage::get_template_data, storage::set_template_data])
+    .invoke_handler(tauri::generate_handler![write_file,
+       make_dir,storage::set_path_data,storage::get_path_data, storage::get_template_data,
+        storage::set_template_data, files::copy_directory, storage::get_template_path])
     .run(tauri::generate_context!())
     .expect("failed to run app");
 }

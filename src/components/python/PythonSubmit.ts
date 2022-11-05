@@ -2,6 +2,7 @@ import { PythonFormState } from "./PythonForm";
 import { z } from "zod";
 import { PythonProjectCommands } from "./PythonCommands";
 import { handleError } from "../../utility/handleError";
+import { invoke } from "@tauri-apps/api";
 
 export const PythonSubmit = async (
   {
@@ -12,58 +13,48 @@ export const PythonSubmit = async (
     Package_Manager,
     Project_Type,
     Packages,
+    Template,
   }: PythonFormState,
   setPath: any
 ) => {
-  const Project = new PythonProjectCommands(
-    Project_Name,
-    "C:\\Projects\\Python\\"
-  );
-
-  if (Package_Manager) {
-    if (Package_Manager == "Poetry") {
-      await handleError(
-        Project.InitialzePoetry(),
-        "Poetry initialized...",
-        "Poetry failed to initialize..."
-      );
-    } else if (Package_Manager == "Venv") {
-      await handleError(
-        Project.CreateVenvEnv(),
-        "Venv env created...",
-        "Venv env could not be created..."
-      );
-    }
-  }
-
-  if (Packages) {
-    // TODO add split of packages and adding using poetry
-  }
+  console.log("Submitted...")
+  const Project = new PythonProjectCommands(Project_Name, Path);
 
   await handleError(Project.createProjectDirectory(), "Yeah", "Whoops");
 
-  await handleError(Project.createFile("test.txt"), "Yeah", "Whoops");
+  if (Template) {
+    Project.useTemplate(Template, "python");
+  } else {
+    // create default main file
+    await handleError(Project.createFile("main.py"), "Yeah", "Whoops");
 
-  if (Git_Setup == "Initialize Git") {
-    await handleError(
-      Project.initializeGit(),
-      "Git was initialized",
-      "git i err"
-    );
-    await handleError(
-      Project.createGitIgnore(),
-      "Gitignore was created",
-      "gitignore err"
-    );
+    // set package manager
+    if (Package_Manager) {
+      if (Package_Manager == "Poetry") {
+        await handleError(
+          Project.InitialzePoetry(),
+          "Poetry initialized...",
+          "Poetry failed to initialize..."
+        );
+      } else if (Package_Manager == "Venv") {
+        await handleError(
+          Project.CreateVenvEnv(),
+          "Venv env created...",
+          "Venv env could not be created..."
+        );
+      }
+    }
+
+    if (Framework) {
+      // TODO add framework code
+    }
+
+    if (Packages) {
+      // TODO add split of packages and adding using poetry
+    }
+
+    Project.GitSetup(Git_Setup);
+
+    setPath(Project.path);
   }
-
-  // if (Git_Setup == "Connect to existing repo") {
-  //   await handleError(
-  //     Project.linkToExistingGithub(),
-  //     "Github was linked",
-  //     "github err"
-  //   );
-  }
-
-  //setPath(Project.path);
-
+};
