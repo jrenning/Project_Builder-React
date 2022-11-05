@@ -3,8 +3,8 @@ import { BaseProjectCommands } from "../shared/sharedCommands";
 
 
 export class RustProjectCommands extends BaseProjectCommands {
-  constructor(name: string, path: string) {
-    super(name, path);
+  constructor(name: string, path: string, project_toast: any) {
+    super(name, path, project_toast);
   }
   async InitializeCargo() {
     const cargo_command = await new Command("cargo-new", ["new", this.name], {

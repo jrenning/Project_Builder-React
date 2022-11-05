@@ -7,7 +7,6 @@ import Step2Form from "./Step2Form";
 import { formSchema1 } from "../form_components/Step1Form";
 import { useMultiStepForm } from "../../hooks/useMultiStepForm";
 
-
 export const overallPythonFormSchema = z.object({
   Project_Name: z.string().min(1, "Please enter a name"),
   Project_Type: z.enum(["New Project", "Existing Template"]),
@@ -25,7 +24,7 @@ export const overallPythonFormSchema = z.object({
   Packages: z.string(),
 });
 
-export type PythonFormState = z.infer<typeof overallPythonFormSchema>
+export type PythonFormState = z.infer<typeof overallPythonFormSchema>;
 
 export default function PythonForm() {
   const initialState = {
@@ -41,12 +40,17 @@ export default function PythonForm() {
   const { setFormState, setFormStep, formState, formStep, step1 } =
     useMultiStepForm(overallPythonFormSchema, initialState, "Python");
 
-
-
-
   return (
     <>
-      {formStep == 0 ? step1 : <Step2Form setFormState={setFormState} setFormStep={setFormStep}/>}
+      {formStep == 0 ? (
+        step1
+      ) : (
+        <Step2Form
+          setFormState={setFormState}
+          setFormStep={setFormStep}
+          formState={formState}
+        />
+      )}
 
       <VSCodeButton path={formState.Path}></VSCodeButton>
     </>

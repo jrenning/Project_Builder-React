@@ -3,7 +3,7 @@ import { z } from "zod";
 import { PythonProjectCommands } from "./PythonCommands";
 import { handleError } from "../../utility/handleError";
 import { invoke } from "@tauri-apps/api";
-
+import { toast, useToast } from "react-toastify";
 export const PythonSubmit = async (
   {
     Project_Name,
@@ -18,7 +18,10 @@ export const PythonSubmit = async (
   setPath: any
 ) => {
   console.log("Submitted...")
-  const Project = new PythonProjectCommands(Project_Name, Path);
+  const project_toast = toast("Creating project...")
+  const Project = new PythonProjectCommands(Project_Name, Path, project_toast);
+
+  console.log(Package_Manager)
 
   await handleError(Project.createProjectDirectory(), "Yeah", "Whoops");
 

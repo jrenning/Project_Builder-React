@@ -3,23 +3,46 @@ import { Command } from "@tauri-apps/api/shell";
 import { toast, useToast } from "react-toastify";
 import { handleError } from "../../utility/handleError";
 
-type GitSetup = "No Setup" | "Initialize Git" | "Create repo and connect" | "Connect to existing repo"
+type GitSetup =
+  | "No Setup"
+  | "Initialize Git"
+  | "Create repo and connect"
+  | "Connect to existing repo";
 
 export class BaseProjectCommands {
   name: string;
   path: string;
-  constructor(name: string, path: string) {
+  project_toast: any;
+  constructor(name: string, path: string, project_toast: any) {
     this.name = name;
     this.path = path;
+    this.project_toast = project_toast;
   }
 
-  #updateToastMessage(message: string) {
-    toast.update()
+  /* Toast Update Methods*/
+
+  setToastMessage(message: string) {
+    toast.update(this.project_toast, {
+      render: message,
+      type: toast.TYPE.INFO,
+    });
   }
 
+  setToastSuccess(message?: string) {
+    toast.update(this.project_toast, {
+      type: toast.TYPE.SUCCESS,
+      render: message && message,
+    });
+  }
+
+  setToastError(message?: string) {
+    toast.update(this.project_toast, {
+      type: toast.TYPE.ERROR,
+      render: message && message,
+    });
+  }
 
   async createProjectDirectory() {
-    
     // makes project directory and returns new path to it
     const dir_creation = await invoke("make_dir", {
       dir: this.name,
@@ -31,15 +54,17 @@ export class BaseProjectCommands {
       });
 
     if (!!dir_creation == false) {
+      this.setToastError("Project directory couldn't be created");
       return false;
     }
 
     this.path = this.path + this.name + "\\";
+    this.setToastMessage("Project Directory created successfully...");
 
     return !!dir_creation;
   }
   async createFile(file_name: string): Promise<unknown> {
-    let file_creation = invoke("write_file", {
+    let file_creation = await invoke("write_file", {
       fileName: file_name,
       dir: this.path,
     })
@@ -47,6 +72,10 @@ export class BaseProjectCommands {
       .catch(function (err) {
         console.log(err);
       });
+
+    file_creation
+      ? this.setToastMessage(`${file_name} was created...`)
+      : this.setToastError(`${file_name} couldn't be created`);
 
     //rust returns true or false, no !! needed
     return file_creation;
@@ -60,28 +89,29 @@ export class BaseProjectCommands {
   }
 
   async useTemplate(template: string, language: string): Promise<boolean> {
-        let template_path: string = await invoke("get_template_path", {
-          name: template,
-          language: language,
-        });
-        let status;
-        if (template_path.includes("https://github.com")) {
-          
-          status = await this.cloneGitRepo(template_path);
-        } else {
-          status = await this.copyDirectory(template_path);
-        }
+    let template_path: string = await invoke("get_template_path", {
+      name: template,
+      language: language,
+    });
+    let status;
+    if (template_path.includes("https://github.com")) {
+      status = await this.cloneGitRepo(template_path);
+    } else {
+      status = await this.copyDirectory(template_path);
+    }
 
-        return status;
+    return status;
   }
 
   async cloneGitRepo(link: string): Promise<boolean> {
     const git_clone = await new Command("git-clone", ["clone", link], {
       cwd: this.path,
-    }).execute().catch(function(err) {
-      return false;
-    });
-    return true
+    })
+      .execute()
+      .catch(function (err) {
+        return false;
+      });
+    return true;
   }
 
   async initializeGit() {
@@ -110,25 +140,24 @@ export class BaseProjectCommands {
   }
 
   async GitSetup(Git_Setup: GitSetup) {
-        if (Git_Setup == "Initialize Git") {
-          await handleError(
-            this.initializeGit(),
-            "Git was initialized",
-            "git i err"
-          );
-          await handleError(
-            this.createGitIgnore(),
-            "Gitignore was created",
-            "gitignore err"
-          );
-        }
-        if (Git_Setup == "Create repo and connect") {
-          // TODO
-        }
-        if (Git_Setup == "Connect to existing repo") {
-        }
+    if (Git_Setup == "Initialize Git") {
+      await handleError(
+        this.initializeGit(),
+        "Git was initialized",
+        "git i err"
+      );
+      await handleError(
+        this.createGitIgnore(),
+        "Gitignore was created",
+        "gitignore err"
+      );
+    }
+    if (Git_Setup == "Create repo and connect") {
+      // TODO
+    }
+    if (Git_Setup == "Connect to existing repo") {
+    }
   }
-
 
   async addCommitGit() {
     const git_add_command = await new Command(

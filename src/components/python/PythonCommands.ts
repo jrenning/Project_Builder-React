@@ -2,19 +2,23 @@ import { Command } from "@tauri-apps/api/shell";
 import { BaseProjectCommands } from "../shared/sharedCommands";
 
 export class PythonProjectCommands extends BaseProjectCommands {
-  constructor(name: string, path: string) {
-    super(name, path);
+  constructor(name: string, path: string, project_toast: any) {
+    super(name, path, project_toast);
   }
   async CreateVenvEnv(): Promise<boolean> {
     // creates env in python using venv
     // TODO add check for not having venv
+    this.setToastMessage("Creating venv...")
     const env_command = await new Command("make_env", this.path, {
       cwd: this.path,
     })
       .execute()
-      .catch(function (err) {
-        console.log(err);
+      .catch((err) => {
+        this.setToastError(err)
       });
+
+      this.setToastSuccess("Venv was created successfully")
+
 
     return !!env_command;
   }
