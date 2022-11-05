@@ -100,6 +100,10 @@ export class BaseProjectCommands {
       status = await this.copyDirectory(template_path);
     }
 
+    status
+      ? this.setToastSuccess(`Template ${template} successfully copied`)
+      : this.setToastError(`Template ${template} could not be copied`);
+
     return status;
   }
 
@@ -108,9 +112,11 @@ export class BaseProjectCommands {
       cwd: this.path,
     })
       .execute()
-      .catch(function (err) {
+      .catch((err) => {
+        this.setToastError(`Error: ${err}`)
         return false;
       });
+      this.setToastSuccess(`Repo from ${link} successfully cloned`)
     return true;
   }
 
@@ -119,9 +125,11 @@ export class BaseProjectCommands {
       cwd: this.path,
     })
       .execute()
-      .catch(function (err) {
-        console.log(err);
+      .catch((err) => {
+        this.setToastError(`Error: ${err}`);
       });
+
+      this.setToastSuccess("Git initialized")
 
     return !!git_command;
   }
@@ -132,10 +140,10 @@ export class BaseProjectCommands {
       dir: this.path,
     })
       .then()
-      .catch(function (err) {
-        console.log(err);
+      .catch((err) => {
+        this.setToastError("Git ignore could not be created")
       });
-
+      this.setToastSuccess("Git ignore created")
     return !!gitignore;
   }
 

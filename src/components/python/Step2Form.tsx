@@ -9,6 +9,7 @@ import { ButtonDiv } from "../../styles/FormStyles";
 import { Input } from "../form_components/Input";
 import { PythonSubmit } from "./PythonSubmit";
 import { ToastContainer } from "react-toastify";
+import { useIsMount } from "../../hooks/useIsMount";
 
 export const formSchema2 = z.object({
   Framework: z.enum(["Django", "Flask", "Vanilla"]),
@@ -20,7 +21,7 @@ export const formSchema2 = z.object({
     "Connect to existing repo",
   ]),
   Github_Repo: z.string().optional(),
-  Packages: z.string().optional(),
+  Packages: z.string().optional()
 });
 
 
@@ -34,19 +35,24 @@ type Props = {
 };
 
 function Step2Form({ setFormState, formState,  setFormStep }: Props) {
+  const [path, setPath] = useState("");
 
-  const [path, setPath] = useState("")
+  const isMount = useIsMount()
+
   const Step2Submit = (data: Step2Data) => {
     setFormState((prevState: PythonFormState) => ({
       ...prevState,
       ...data,
     }));
-
-    PythonSubmit(formState, setPath)
-    
   };
 
-
+  // only call when state has been fully updated
+  useEffect(() => {
+    // skip submit on initial page load
+    if (!isMount) {
+      PythonSubmit(formState, setPath);
+    }
+  }, [formState]);
 
   const goBack = () => {
     setFormStep(0);
@@ -57,25 +63,37 @@ function Step2Form({ setFormState, formState,  setFormStep }: Props) {
   });
 
   const checkGithub = (data: ChangeEvent<HTMLSelectElement>) => {
-    if (data.target.value == "Create repo and connect" || data.target.value == "Connect to existing repo") {
-        setGithub(true)
+    if (
+      data.target.value == "Create repo and connect" ||
+      data.target.value == "Connect to existing repo"
+    ) {
+      setGithub(true);
+    } else {
+      setGithub(false);
     }
-    else {
-        setGithub(false)
-    }
-  }
+  };
+  // avoid needed to update selections every reload
+  useEffect(() => {
+    form.reset({
+      Framework: "Vanilla",
+      Package_Manager: "None",
+      Git_Setup: "No Setup",
+      Packages: formState.Packages && formState.Packages,
+    });
+  }, []);
 
   const [Github, setGithub] = useState(false);
 
-
   return (
     <>
-    <ToastContainer />
+      <ToastContainer />
+      {console.log(form.formState.errors)}
       <Form form={form} onSubmit={Step2Submit}>
         <SelectBox
           select_name="Framework"
+          select_label="Framework"
           default_option="Vanilla"
-          options={["Django", "Flask", "Vanilla"]}
+          options={["Django", "Flask"]}
           control={form.control}
         />
         <SelectBox

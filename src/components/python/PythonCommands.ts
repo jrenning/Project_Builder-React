@@ -1,4 +1,5 @@
 import { Command } from "@tauri-apps/api/shell";
+import { toast } from "react-toastify";
 import { BaseProjectCommands } from "../shared/sharedCommands";
 
 export class PythonProjectCommands extends BaseProjectCommands {
@@ -23,17 +24,20 @@ export class PythonProjectCommands extends BaseProjectCommands {
     return !!env_command;
   }
 
-  async InitialzePoetry() {
+  async InitializePoetry() {
     // initializes poetry
+    this.setToastMessage("Adding Poetry...")
     const poetry_command = await new Command(
       "cmd",
       ["/C", "poetry", "init", "-n"],
       { cwd: this.path }
     )
       .execute()
-      .catch(function (err) {
-        console.log(err);
+      .catch((err) => {
+        this.setToastError("Poetry couldn't be initialized")
       });
+
+      this.setToastSuccess("Poetry was initialized")
 
     return !!poetry_command;
   }

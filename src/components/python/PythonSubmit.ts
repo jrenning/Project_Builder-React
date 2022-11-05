@@ -21,7 +21,10 @@ export const PythonSubmit = async (
   const project_toast = toast("Creating project...")
   const Project = new PythonProjectCommands(Project_Name, Path, project_toast);
 
-  console.log(Package_Manager)
+  console.log(Packages)
+
+
+  return
 
   await handleError(Project.createProjectDirectory(), "Yeah", "Whoops");
 
@@ -35,7 +38,7 @@ export const PythonSubmit = async (
     if (Package_Manager) {
       if (Package_Manager == "Poetry") {
         await handleError(
-          Project.InitialzePoetry(),
+          Project.InitializePoetry(),
           "Poetry initialized...",
           "Poetry failed to initialize..."
         );
@@ -59,5 +62,11 @@ export const PythonSubmit = async (
     Project.GitSetup(Git_Setup);
 
     setPath(Project.path);
+    // final success message
+    toast.update(project_toast, {
+      type: toast.TYPE.SUCCESS,
+      render: `Project ${Project_Name} created at ${Project.path}`,
+      autoClose: 5000,
+    })
   }
 };
