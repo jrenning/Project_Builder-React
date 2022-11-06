@@ -49,8 +49,8 @@ function Step1Form({ formData, setFormState, setFormStep, submitHandler, childre
       setTemplateEnter(true);
     } else {
       setTemplateEnter(false);
-      // set template back to undefined, avoids accidental template creation
-      formData.Template = undefined;
+      // set template back to empty avoids accidental template creation
+      form.setValue("Template", "")
     }
   };
 
@@ -59,10 +59,11 @@ function Step1Form({ formData, setFormState, setFormStep, submitHandler, childre
   useEffect(() => {
     form.reset({
       Project_Name: formData.Project_Name && formData.Project_Name,
-      Path: formData.Path && formData.Path,
       Project_Type: formData.Project_Type && formData.Project_Type,
-      Template: formData.Template && formData.Template
+      Template: formData.Template && formData.Template,
+      Path: formData.Path && formData.Path
     });
+    form.setValue("Path", formData.Path)
   }, []);
 
   return (

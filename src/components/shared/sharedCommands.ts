@@ -87,6 +87,7 @@ export class BaseProjectCommands {
 
     // get last part of copy path
     let trailing = path.match(/[^\\]+$/)
+    //@ts-ignore
     let path_to_rename = trailing[0]
 
     await invoke("copy_directory", {
@@ -116,11 +117,12 @@ export class BaseProjectCommands {
     console.log(template_path)
     let status: boolean = false;
     if (template_path.includes("https://github.com")) {
+      // done here to give git an empty dir to copy into
+      await this.createProjectDirectory();
       await this.cloneGitRepo(template_path)
         .then(() => (status = true))
         .catch((err) => (status = false));
     } else {
-      console.log("got to copy")
       await this.copyDirectory(template_path)
         .then(() => (status = true))
         .catch((err) => {
@@ -137,7 +139,8 @@ export class BaseProjectCommands {
   }
 
   async cloneGitRepo(link: string): Promise<boolean> {
-    const git_clone = await new Command("git-clone", ["clone", link], {
+
+    const git_clone = await new Command("git-clone", ["clone", link, "."], {
       cwd: this.path,
     })
       .execute()

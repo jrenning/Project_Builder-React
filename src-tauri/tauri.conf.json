@@ -70,7 +70,7 @@
           {
             "name": "git-clone",
             "cmd": "git",
-            "args": ["clone", {"validator": "\\S+"}]
+            "args": ["clone", {"validator": "\\S+"}, "."]
           },
           {
             "name": "rename",

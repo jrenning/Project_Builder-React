@@ -101,11 +101,9 @@ pub fn get_template_data(language: String) -> Result<TemplateData, String> {
     // TODO error checking
     let test = read_in_template_file();
 
-    println!("{:?}", test);
 
     let templates: &Vec<Template> = &test[&language].templates;
 
-    println!("{:?}",templates);
 
     let mut template_names = Vec::new();
     let mut template_locations = Vec::new();
@@ -114,8 +112,17 @@ pub fn get_template_data(language: String) -> Result<TemplateData, String> {
         template_names.push(template.name.clone());
         template_locations.push(template.location.clone());
     }
+    let mut final_template_names = Vec::new();
 
-    Ok(TemplateData { template_names, template_locations })
+    // replace backslashes in urls
+    for name in template_names {
+        if name.contains("https:") {
+            final_template_names.push(name.replace("\\", ""));
+        }
+        final_template_names.push(name)
+    }
+
+    Ok(TemplateData { template_names:final_template_names, template_locations })
 
 }
 
@@ -155,7 +162,13 @@ pub fn get_template_path(name: String, language: String) -> String {
 
     let index = names.iter().position(|r| r == &name).unwrap();
 
-    return locations[index].clone();
+    // if website link replace backslashes
+    let mut result = locations[index].clone();
+    if locations[index].contains("https:") {
+        result = result.replace("\\", "")
+    }
+
+    return result;
 }
 
 

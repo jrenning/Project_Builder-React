@@ -45,7 +45,6 @@ export default function PythonForm() {
 
   return (
     <>
-      {console.log(path)}
       {formStep == 0 ? (
         step1
       ) : (

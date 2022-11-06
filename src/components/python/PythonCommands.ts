@@ -58,15 +58,17 @@ export class PythonProjectCommands extends BaseProjectCommands {
     return !!install_command;
   };
 
+
   async createDjangoProject() {
     // TODO make work with venv 
     this.setToastMessage("Creating django project...")
     // add django package 
-    this.AddPoetryPackage("django")
+    await this.AddPoetryPackage("django")
+
 
     const django_command = await new Command(
       "cmd",
-      ["/C", "django-admin", "startproject", this.name],
+      ["/C", "poetry", "run", "django-admin", "startproject", this.name],
       {
         cwd: this.path,
       }
@@ -75,8 +77,19 @@ export class PythonProjectCommands extends BaseProjectCommands {
       .catch((err) => {
         this.setToastError(`Django project could not be created`);
       });
+      console.log(django_command)
     this.setToastSuccess(`Django project created`);
 
+  }
+
+  async createFlaskProject() {
+    // TODO add general template?
+    this.setToastMessage("Creating flask project...")
+    await this.AddPoetryPackage("Flask").catch((err)=> {
+      this.setToastError("Flask project couldn't be created")
+      return
+    })
+    this.setToastSuccess("Flask project created")
   }
 }
 

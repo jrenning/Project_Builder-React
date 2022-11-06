@@ -20,8 +20,6 @@ export const PythonSubmit = async (
   const project_toast = toast("Creating project...");
   const Project = new PythonProjectCommands(Project_Name, Path, project_toast);
 
-  console.log(Path);
-  console.log(Project_Name);
 
   
   if (Template) {
@@ -30,7 +28,9 @@ export const PythonSubmit = async (
     // create outer directory
     await handleError(Project.createProjectDirectory(), "Yeah", "Whoops");
     // create default main file
-    await handleError(Project.createFile("main.py"), "Yeah", "Whoops");
+    if (Framework != "Django") {
+      await handleError(Project.createFile("main.py"), "Yeah", "Whoops");
+    }
 
     // set package manager
     if (Package_Manager) {
@@ -50,7 +50,12 @@ export const PythonSubmit = async (
     }
 
     if (Framework) {
-      // TODO add framework code
+      if (Framework == "Django") {
+        await Project.createDjangoProject()
+      }
+      else if (Framework == "Flask") {
+        await Project.createFlaskProject()
+      }
     }
 
     if (Packages && Package_Manager == "Poetry") {
@@ -66,10 +71,14 @@ export const PythonSubmit = async (
     Project.GitSetup(Git_Setup);
   }
 
-  // final success message
-  toast.update(project_toast, {
-    type: toast.TYPE.SUCCESS,
-    render: `Project ${Project_Name} created at ${Project.path}`,
-    autoClose: 5000,
-  });
+  // final success message, made async to avoid it happening out of order
+  const makeThisAsync = async () => {
+      toast.update(project_toast, {
+        type: toast.TYPE.SUCCESS,
+        render: `Project ${Project_Name} created at ${Project.path}`,
+        autoClose: 5000,
+      });
+  }
+  await makeThisAsync()
+
 };
