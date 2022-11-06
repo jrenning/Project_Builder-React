@@ -30,7 +30,8 @@ function FolderSelection({ form }: Props) {
         label="Path"
         type="text"
         placeholder="Path"
-        {...form.register("Path", { disabled: true })}
+        readOnly={true}
+        {...form.register("Path")}
       />
     </>
   );
