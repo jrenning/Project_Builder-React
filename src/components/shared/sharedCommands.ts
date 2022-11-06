@@ -59,7 +59,7 @@ export class BaseProjectCommands {
     }
 
     this.path = this.path + "\\" + this.name + "\\";
-    console.log(this.path)
+    console.log(this.path);
     this.setToastMessage("Project Directory created successfully...");
 
     return !!dir_creation;
@@ -83,10 +83,29 @@ export class BaseProjectCommands {
   }
 
   async copyDirectory(path: string): Promise<boolean> {
-    return await invoke("copy_directory", {
+    // copy directory to chosen path location
+
+    // get last part of copy path
+    let trailing = path.match(/[^\\]+$/)
+    let path_to_rename = trailing[0]
+
+    await invoke("copy_directory", {
       copyPath: path,
       destinationPath: this.path,
-    });
+    })
+      .then()
+      .catch((_err) => {
+        return false;
+      });
+    // rename copied directory to project name
+    await new Command("cmd", ["/C", "ren", path_to_rename, this.name], {
+      cwd: this.path,
+    })
+      .execute()
+      .catch((err) => {
+        this.setToastError(`Error: ${err}`);
+      });
+    return true;
   }
 
   async useTemplate(template: string, language: string): Promise<boolean> {
@@ -94,11 +113,20 @@ export class BaseProjectCommands {
       name: template,
       language: language,
     });
-    let status;
+    console.log(template_path)
+    let status: boolean = false;
     if (template_path.includes("https://github.com")) {
-      status = await this.cloneGitRepo(template_path);
+      await this.cloneGitRepo(template_path)
+        .then(() => (status = true))
+        .catch((err) => (status = false));
     } else {
-      status = await this.copyDirectory(template_path);
+      console.log("got to copy")
+      await this.copyDirectory(template_path)
+        .then(() => (status = true))
+        .catch((err) => {
+          status = false
+          console.log(err)
+        });
     }
 
     status
@@ -114,10 +142,10 @@ export class BaseProjectCommands {
     })
       .execute()
       .catch((err) => {
-        this.setToastError(`Error: ${err}`)
+        this.setToastError(`Error: ${err}`);
         return false;
       });
-      this.setToastSuccess(`Repo from ${link} successfully cloned`)
+    this.setToastSuccess(`Repo from ${link} successfully cloned`);
     return true;
   }
 
@@ -130,7 +158,7 @@ export class BaseProjectCommands {
         this.setToastError(`Error: ${err}`);
       });
 
-      this.setToastSuccess("Git initialized")
+    this.setToastSuccess("Git initialized");
 
     return !!git_command;
   }
@@ -142,9 +170,9 @@ export class BaseProjectCommands {
     })
       .then()
       .catch((err) => {
-        this.setToastError("Git ignore could not be created")
+        this.setToastError("Git ignore could not be created");
       });
-      this.setToastSuccess("Git ignore created")
+    this.setToastSuccess("Git ignore created");
     return !!gitignore;
   }
 

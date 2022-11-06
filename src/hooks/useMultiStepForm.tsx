@@ -4,7 +4,6 @@ import Step1Form from "../components/form_components/Step1Form";
 import { overallPythonFormSchema } from "../components/python/PythonForm";
 import { formSchema1 } from "../components/form_components/Step1Form";
 
-
 const baseSchema = z.object({
   Project_Name: z.string().min(1, "Please enter a name"),
   Project_Type: z.enum(["New Project", "Existing Template"]),
@@ -12,7 +11,7 @@ const baseSchema = z.object({
   Template: z.string().optional(),
 });
 
-// breaks if you use import to get this 
+// breaks if you use import to get this
 const overallFormSchemaJavascript = z.object({
   Framework: z.enum(["Vanilla", "React (CRA)", "Next"]),
   Package_Manager: z.enum(["npm", "yarn"]),
@@ -25,17 +24,15 @@ const overallFormSchemaJavascript = z.object({
   Github_Repo: z.string().optional(),
   Packages: z.string(),
   Project_Name: z.string().min(1, "Please enter a name"),
-  Project_Type: z.enum(["New Project", "Existing Template"]),
+  Project_Type: z.enum(["New Project", "Use Existing Template"]),
   Path: z.string(),
   Template: z.string().optional(),
 });
 
-
-
 // combine options with all possible other schema options (set as optional)
 export const overallFormOptions = z.object({
   Project_Name: z.string().min(1, "Please enter a name"),
-  Project_Type: z.enum(["New Project", "Existing Template"]),
+  Project_Type: z.enum(["New Project", "Use Existing Template"]),
   Path: z.string(),
   Template: z.string().optional(),
   Framework: z.enum(["Django", "Flask", "Vanilla", "React (CRA)", "Next"]),
@@ -50,17 +47,18 @@ export const overallFormOptions = z.object({
   Packages: z.string().optional(),
 });
 
-
 export type overallOptions = z.infer<typeof overallFormOptions>;
-
-
-
 
 type Step1Schema = z.infer<typeof formSchema1>;
 
-export function useMultiStepForm(formStateObject: ZodSchema<overallOptions>, initialState: any, language: string) {
-
-  type FormState = z.infer<typeof formStateObject>
+export function useMultiStepForm(
+  formStateObject: ZodSchema<overallOptions>,
+  initialState: any,
+  language: string,
+  submitHandler: (data: any) => Promise<void>,
+  setPath: React.Dispatch<React.SetStateAction<any>>
+) {
+  type FormState = z.infer<typeof formStateObject>;
   const [formState, setFormState] = useState<FormState>(initialState);
   const [formStep, setFormStep] = useState(0);
 
@@ -72,25 +70,28 @@ export function useMultiStepForm(formStateObject: ZodSchema<overallOptions>, ini
         ...data,
       }));
       setFormStep(1);
+    } else {
+      // if template call overall submission handler
+      submitHandler(data);
+      setPath(data.Path + "\\" + data.Project_Name)
     }
-  }
+  };
 
-    const Step1 = (
-      <Step1Form
-        setFormState={setFormState}
-        setFormStep={setFormStep}
-        formData={formState}
-        submitHandler={Step1Submit}
-        language={language}
-      ></Step1Form>
-    );
+  const Step1 = (
+    <Step1Form
+      setFormState={setFormState}
+      setFormStep={setFormStep}
+      formData={formState}
+      submitHandler={Step1Submit}
+      language={language}
+    ></Step1Form>
+  );
 
-
-    return {
-      step1: Step1,
-      formState: formState,
-      setFormState: setFormState,
-      formStep: formStep,
-      setFormStep: setFormStep,
-    };
+  return {
+    step1: Step1,
+    formState: formState,
+    setFormState: setFormState,
+    formStep: formStep,
+    setFormStep: setFormStep,
+  };
 }

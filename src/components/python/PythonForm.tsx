@@ -9,7 +9,7 @@ import { useMultiStepForm } from "../../hooks/useMultiStepForm";
 
 export const overallPythonFormSchema = z.object({
   Project_Name: z.string().min(1, "Please enter a name"),
-  Project_Type: z.enum(["New Project", "Existing Template"]),
+  Project_Type: z.enum(["New Project", "Use Existing Template"]),
   Path: z.string(),
   Template: z.string().optional(),
   Framework: z.enum(["Django", "Flask", "Vanilla"]),
@@ -37,11 +37,15 @@ export default function PythonForm() {
     Packages: [""],
   };
 
+  const [path, setPath] = useState("")
+
   const { setFormState, setFormStep, formState, formStep, step1 } =
-    useMultiStepForm(overallPythonFormSchema, initialState, "Python");
+    useMultiStepForm(overallPythonFormSchema, initialState, "Python", PythonSubmit, setPath);
+
 
   return (
     <>
+      {console.log(path)}
       {formStep == 0 ? (
         step1
       ) : (
@@ -49,10 +53,11 @@ export default function PythonForm() {
           setFormState={setFormState}
           setFormStep={setFormStep}
           formState={formState}
+          setPath={setPath}
         />
       )}
 
-      <VSCodeButton path={formState.Path}></VSCodeButton>
+      <VSCodeButton path={path}></VSCodeButton>
     </>
   );
 }

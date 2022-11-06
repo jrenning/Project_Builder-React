@@ -57,6 +57,27 @@ export class PythonProjectCommands extends BaseProjectCommands {
       this.setToastSuccess(`${package_name} installed`)
     return !!install_command;
   };
+
+  async createDjangoProject() {
+    // TODO make work with venv 
+    this.setToastMessage("Creating django project...")
+    // add django package 
+    this.AddPoetryPackage("django")
+
+    const django_command = await new Command(
+      "cmd",
+      ["/C", "django-admin", "startproject", this.name],
+      {
+        cwd: this.path,
+      }
+    )
+      .execute()
+      .catch((err) => {
+        this.setToastError(`Django project could not be created`);
+      });
+    this.setToastSuccess(`Django project created`);
+
+  }
 }
 
 

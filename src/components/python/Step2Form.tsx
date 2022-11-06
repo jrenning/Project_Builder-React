@@ -30,12 +30,12 @@ type Step2Data = z.infer<typeof formSchema2>;
 
 type Props = {
   setFormState: React.Dispatch<React.SetStateAction<any>>;
-  formState: any
+  formState: any;
   setFormStep: React.Dispatch<React.SetStateAction<number>>;
+  setPath: React.Dispatch<React.SetStateAction<any>>;
 };
 
-function Step2Form({ setFormState, formState,  setFormStep }: Props) {
-  const [path, setPath] = useState("");
+function Step2Form({ setFormState, formState,  setFormStep, setPath }: Props) {
 
   const isMount = useIsMount()
 
@@ -47,10 +47,15 @@ function Step2Form({ setFormState, formState,  setFormStep }: Props) {
   };
 
   // only call when state has been fully updated
-  useEffect(() => {
+  useEffect( () => {
     // skip submit on initial page load
     if (!isMount) {
-      PythonSubmit(formState, setPath);
+       const submitProject = async () => {
+        await PythonSubmit(formState);
+      }
+      submitProject()
+      // set path fpr vscode open button
+      setPath(formState.Path + "\\" + formState.Project_Name)
     }
   }, [formState]);
 

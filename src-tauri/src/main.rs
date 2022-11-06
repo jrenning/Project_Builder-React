@@ -58,7 +58,8 @@ fn main() {
     // This is where you pass in your commands
     .invoke_handler(tauri::generate_handler![write_file,
        make_dir,storage::set_path_data,storage::get_path_data, storage::get_template_data,
-        storage::set_template_data, files::copy_directory, storage::get_template_path])
+        storage::set_template_data, files::copy_directory, storage::get_template_path,
+        files::rename_directory])
     .run(tauri::generate_context!())
     .expect("failed to run app");
 }

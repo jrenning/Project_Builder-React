@@ -4,8 +4,6 @@ import { Form, useForm } from "./Form";
 import { Input } from "./Input";
 import { SelectBox } from "../shared/SelectBox";
 import SubmitButton from "./SubmitButton";
-import FormButton from "../shared/FormButton";
-import {open} from "@tauri-apps/api/dialog"
 import { overallOptions } from "../../hooks/useMultiStepForm";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -14,7 +12,7 @@ import { useTemplates } from "../../hooks/useTemplates";
 
 export const formSchema1 = z.object({
   Project_Name: z.string().min(1, "Please enter a name"),
-  Project_Type: z.enum(["New Project", "Existing Template"]),
+  Project_Type: z.enum(["New Project", "Use Existing Template"]),
   Path: z.string({required_error: "Path is required"}),
   Template: z.string().optional(),
 });
@@ -51,6 +49,8 @@ function Step1Form({ formData, setFormState, setFormStep, submitHandler, childre
       setTemplateEnter(true);
     } else {
       setTemplateEnter(false);
+      // set template back to undefined, avoids accidental template creation
+      formData.Template = undefined;
     }
   };
 
@@ -67,7 +67,7 @@ function Step1Form({ formData, setFormState, setFormStep, submitHandler, childre
 
   return (
     <>
-      {children}
+    <ToastContainer />
       <Form onSubmit={submitHandler} form={form}>
         <Input
           label="Project Name"

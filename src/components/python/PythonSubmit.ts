@@ -14,19 +14,21 @@ export const PythonSubmit = async (
     Project_Type,
     Packages,
     Template,
-  }: PythonFormState,
-  setPath: any
+  }: PythonFormState
 ) => {
-  console.log("Submitted...")
-  const project_toast = toast("Creating project...")
+  console.log("Submitted...");
+  const project_toast = toast("Creating project...");
   const Project = new PythonProjectCommands(Project_Name, Path, project_toast);
 
+  console.log(Path);
+  console.log(Project_Name);
 
-  await handleError(Project.createProjectDirectory(), "Yeah", "Whoops");
-
+  
   if (Template) {
-    Project.useTemplate(Template, "python");
+    await Project.useTemplate(Template, "python");
   } else {
+    // create outer directory
+    await handleError(Project.createProjectDirectory(), "Yeah", "Whoops");
     // create default main file
     await handleError(Project.createFile("main.py"), "Yeah", "Whoops");
 
@@ -52,23 +54,22 @@ export const PythonSubmit = async (
     }
 
     if (Packages && Package_Manager == "Poetry") {
-      let packages = Packages.split(",")
-      packages = packages.map((pack)=> {
-        return pack.trim()
-      })
-      packages.forEach(async (pack)=> {
-        await Project.AddPoetryPackage(pack)
-      })
+      let packages = Packages.split(",");
+      packages = packages.map((pack) => {
+        return pack.trim();
+      });
+      packages.forEach(async (pack) => {
+        await Project.AddPoetryPackage(pack);
+      });
     }
 
     Project.GitSetup(Git_Setup);
-
-    setPath(Project.path);
-    // final success message
-    toast.update(project_toast, {
-      type: toast.TYPE.SUCCESS,
-      render: `Project ${Project_Name} created at ${Project.path}`,
-      autoClose: 5000,
-    })
   }
+
+  // final success message
+  toast.update(project_toast, {
+    type: toast.TYPE.SUCCESS,
+    render: `Project ${Project_Name} created at ${Project.path}`,
+    autoClose: 5000,
+  });
 };
