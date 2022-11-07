@@ -9,7 +9,8 @@ import { ButtonDiv } from "../../styles/FormStyles";
 import { Input } from "../form_components/Input";
 import { PythonSubmit } from "./PythonSubmit";
 import { ToastContainer } from "react-toastify";
-import { useIsMount } from "../../hooks/useIsMount";
+import { useFormSubmit } from "../../hooks/useFormSubmit";
+import { useIsMount} from "../../hooks/useIsMount";
 
 export const formSchema2 = z.object({
   Framework: z.enum(["Django", "Flask", "Vanilla"]),
@@ -36,9 +37,6 @@ type Props = {
 };
 
 function Step2Form({ setFormState, formState,  setFormStep, setPath }: Props) {
-
-  const isMount = useIsMount()
-
   const Step2Submit = (data: Step2Data) => {
     setFormState((prevState: PythonFormState) => ({
       ...prevState,
@@ -46,18 +44,10 @@ function Step2Form({ setFormState, formState,  setFormStep, setPath }: Props) {
     }));
   };
 
+
+  // submits form when state is updated
   // only call when state has been fully updated
-  useEffect( () => {
-    // skip submit on initial page load
-    if (!isMount) {
-       const submitProject = async () => {
-        await PythonSubmit(formState);
-      }
-      submitProject()
-      // set path fpr vscode open button
-      setPath(formState.Path + "\\" + formState.Project_Name)
-    }
-  }, [formState]);
+  useFormSubmit(PythonSubmit,formState,setPath)
 
   const goBack = () => {
     setFormStep(0);
@@ -80,10 +70,10 @@ function Step2Form({ setFormState, formState,  setFormStep, setPath }: Props) {
   // avoid needed to update selections every reload
   useEffect(() => {
     form.reset({
-      Framework: "Vanilla",
-      Package_Manager: "None",
-      Git_Setup: "No Setup",
-      Packages: formState.Packages && formState.Packages,
+      Framework: formState.Framework ? formState.Framework : "Vanilla",
+      Package_Manager: formState.Package_Manager ? formState.Package_Manager : "None" ,
+      Git_Setup: formState.Git_Setup ? formState.Git_Setup : "No Setup",
+      Packages: formState.Packages ? formState.Packages : "",
     });
   }, []);
 
@@ -117,6 +107,7 @@ function Step2Form({ setFormState, formState,  setFormStep, setPath }: Props) {
           ]}
           select_name="Git_Setup"
           select_label="Git Setup"
+          onChangeEvent={checkGithub}
           control={form.control}
         />
         {Github && (

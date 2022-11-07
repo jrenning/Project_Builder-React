@@ -6,7 +6,7 @@ export class RustProjectCommands extends BaseProjectCommands {
   constructor(name: string, path: string, project_toast: any) {
     super(name, path, project_toast);
   }
-  async InitializeCargo() {
+  async InitializeCargo(): Promise<boolean> {
     const cargo_command = await new Command("cargo-new", ["new", this.name], {
       cwd: this.path,
     })
@@ -17,9 +17,11 @@ export class RustProjectCommands extends BaseProjectCommands {
     // alert if project not created
     //@ts-ignore
     if (cargo_command.code == 101) {
-      alert(" Cargo project could not be created / Project already exists");
-      return;
+      this.setToastError(" Cargo project could not be created / Project already exists");
+      return false;
     }
+    this.setToastSuccess("Cargo initialized correctly")
+    return true;
   };
 }
 

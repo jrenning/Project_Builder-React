@@ -26,7 +26,7 @@ export const overallFormSchemaJavascript = z.object({
   Github_Repo: z.string().optional(),
   Packages: z.string().optional(),
   Project_Name: z.string().min(1, "Please enter a name"),
-  Project_Type: z.enum(["New Project", "Existing Template"]),
+  Project_Type: z.enum(["New Project", "Use Existing Template"]),
   Path: z.string(),
   Template: z.string().optional(),
 });
@@ -46,10 +46,11 @@ export default function JavascriptForm() {
     Template: "",
   };
 
-  const { setFormState, setFormStep, formState, formStep, step1 } =
-    useMultiStepForm(overallFormSchemaJavascript, initialState, "Javascript");
+  const [path, setPath] = useState("")
 
-  const [path, setPath] = useState("");
+
+  const { setFormState, setFormStep, formState, formStep, step1 } =
+    useMultiStepForm(overallFormSchemaJavascript, initialState, "Javascript", JavascriptSubmit, setPath);
 
   return (
     <>
@@ -60,6 +61,7 @@ export default function JavascriptForm() {
           setFormState={setFormState}
           setFormStep={setFormStep}
           formState={formState}
+          setPath={setPath}
         />
       )}
       <VSCodeButton path={path}></VSCodeButton>
