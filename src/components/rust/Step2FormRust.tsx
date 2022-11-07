@@ -1,17 +1,16 @@
-import { Input } from "../form_components/Input";
-import React, { ChangeEvent, useEffect, useState } from "react";
-import { ButtonDiv } from "../../styles/FormStyles";
-import { Form, useForm } from "../form_components/Form";
-import SubmitButton from "../form_components/SubmitButton";
-import FormButton from "../shared/FormButton";
-import { SelectBox } from "../shared/SelectBox";
-import { JavascriptSubmit } from "./FormSubmit";
-import { overallFormSchemaJavascript, OverallJavascriptObject } from "./JavascriptForm";
-import "react-toastify/dist/ReactToastify.css";
-import {ToastContainer} from "react-toastify"
+import React, { useEffect } from "react";
+import { ToastContainer } from "react-toastify";
 import { z } from "zod";
 import { useFormSubmit } from "../../hooks/useFormSubmit";
 import { useGithub } from "../../hooks/useGithub";
+import { ButtonDiv } from "../../styles/FormStyles";
+import { Form, useForm } from "../form_components/Form";
+import { Input } from "../form_components/Input";
+import SubmitButton from "../form_components/SubmitButton";
+import FormButton from "../shared/FormButton";
+import { SelectBox } from "../shared/SelectBox";
+import { overallRustFormSchema, RustFormState } from "./RustForm";
+import { RustSubmit } from "./RustSubmit";
 
 type Props = {
   setFormStep: React.Dispatch<React.SetStateAction<number>>;
@@ -20,8 +19,13 @@ type Props = {
   setPath: React.Dispatch<React.SetStateAction<any>>;
 };
 
-function Step2FormJavascript({setFormStep, setFormState, formState, setPath}: Props) {
-  const formSchema = overallFormSchemaJavascript.pick({
+function Step2FormRust({
+  setFormStep,
+  setFormState,
+  formState,
+  setPath,
+}: Props) {
+  const formSchema = overallRustFormSchema.pick({
     Framework: true,
     Package_Manager: true,
     Git_Setup: true,
@@ -35,24 +39,23 @@ function Step2FormJavascript({setFormStep, setFormState, formState, setPath}: Pr
     schema: formSchema,
   });
 
-  const createJavascriptProject = (data: Step2Data) => {
+  // submits form when form state is updated
+  useFormSubmit(RustSubmit, formState, setPath);
+
+  const updateRustData = (data: Step2Data) => {
     // set the overall state
-    setFormState((prevState: OverallJavascriptObject) => ({
+    setFormState((prevState: RustFormState) => ({
       ...prevState,
       ...data,
     }));
   };
-
-  // submits form when form state is updated
-  useFormSubmit(JavascriptSubmit, formState, setPath);
 
   const goBack = (e: any) => {
     e.preventDefault();
     setFormStep(0);
   };
 
-
-  const [Github, checkGithub] = useGithub()
+  const [Github, checkGithub] = useGithub();
 
   // avoid needed to update selections every reload
   useEffect(() => {
@@ -69,17 +72,17 @@ function Step2FormJavascript({setFormStep, setFormState, formState, setPath}: Pr
   return (
     <>
       <ToastContainer />
-      <Form form={form} onSubmit={createJavascriptProject}>
+      <Form form={form} onSubmit={updateRustData}>
         <SelectBox
           select_name="Framework"
           select_label="Framework"
           default_option="Vanilla"
-          options={["React (CRA)", "Next"]}
+          options={[""]}
           control={form.control}
         />
         <SelectBox
-          default_option="npm"
-          options={["None", "yarn"]}
+          default_option="Cargo"
+          options={["None"]}
           select_name="Package_Manager"
           select_label="Package Manager"
           control={form.control}
@@ -120,4 +123,4 @@ function Step2FormJavascript({setFormStep, setFormState, formState, setPath}: Pr
   );
 }
 
-export default Step2FormJavascript;
+export default Step2FormRust;
