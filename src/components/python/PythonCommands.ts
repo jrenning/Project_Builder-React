@@ -51,11 +51,10 @@ export class PythonProjectCommands extends BaseProjectCommands {
       }
     )
       .execute()
+      .then((_)=> this.setToastSuccess(`${package_name} installed`))
       .catch((err) => {
-        this.setToastError(`${package_name} could nor be installed`)
+        this.setToastError(`${package_name} could nor be installed`);
       });
-      this.setToastSuccess(`${package_name} installed`)
-    return !!install_command;
   };
 
 

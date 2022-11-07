@@ -73,9 +73,9 @@
             "args": ["clone", {"validator": "\\S+"}, "."]
           },
           {
-            "name": "rename",
-            "cmd": "ren",
-            "args": true
+            "name": "cargo-add",
+            "cmd": "cargo",
+            "args": ["add", { "validator": "\\S+" }]
           }
         ]
       }
