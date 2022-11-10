@@ -2,6 +2,7 @@
 use fs_extra::copy_items;
 use fs_extra::dir;
 use std::fs;
+use std::path::Path;
 
 
 // copy directory to new location
@@ -28,4 +29,9 @@ pub fn rename_directory(path: String, newName: String) -> bool {
         Ok(_) => return true,
         Err(_) => return false
     }
+}
+
+#[tauri::command]
+pub fn path_exist(path: String)-> bool {
+    return Path::new(&path).exists()
 }

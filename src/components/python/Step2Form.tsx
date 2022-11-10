@@ -82,7 +82,6 @@ function Step2Form({ setFormState, formState,  setFormStep, setPath }: Props) {
   return (
     <>
       <ToastContainer />
-      {console.log(form.formState.errors)}
       <Form form={form} onSubmit={Step2Submit}>
         <SelectBox
           select_name="Framework"

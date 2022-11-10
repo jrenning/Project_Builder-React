@@ -19,6 +19,15 @@ export const PythonSubmit = async (
   console.log("Submitted...");
   const project_toast = toast("Creating project...");
   const Project = new PythonProjectCommands(Project_Name, Path, project_toast);
+  //let val = await Project.runInitialChecks(Package_Manager,Git_Setup)
+  let val = await Project.runSystemCheck(["gh"])
+  console.log(val)
+  return 
+  let check = false
+  if (!check) {
+    Project.setToastError("Package or program not installed")
+    return 
+  }
 
 
   

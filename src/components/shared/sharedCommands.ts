@@ -1,13 +1,10 @@
 import { invoke } from "@tauri-apps/api";
 import { Command } from "@tauri-apps/api/shell";
 import { toast, useToast } from "react-toastify";
+import { GitSetup } from "../../schemas/ProjectTypes";
 import { handleError } from "../../utility/handleError";
 
-type GitSetup =
-  | "No Setup"
-  | "Initialize Git"
-  | "Create repo and connect"
-  | "Connect to existing repo";
+
 
 export class BaseProjectCommands {
   name: string;
@@ -40,6 +37,25 @@ export class BaseProjectCommands {
       type: toast.TYPE.ERROR,
       render: message && message,
     });
+  }
+
+  async runProjectCheck (): Promise<boolean> {
+    // return false if project already exists, true if it doesn't
+    return !await invoke("path_exist",{path: this.path + "\\" + this.name})
+  }
+
+  async runSystemCheck(program_commands: string[]): Promise<boolean> {
+    // check if program exists in command prompt
+    console.log('In here')
+    let system_command = await new Command("cmd", ["/C", ...program_commands], {
+      cwd: this.path,
+    })
+      .execute()
+
+    console.log(system_command)
+    // 0 code is good 1 is fail 
+    let result = system_command.code == 1 ? false : true
+    return result 
   }
 
   async createProjectDirectory() {

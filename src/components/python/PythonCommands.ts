@@ -1,11 +1,53 @@
 import { Command } from "@tauri-apps/api/shell";
 import { toast } from "react-toastify";
+import { GitSetup } from "../../schemas/ProjectTypes";
 import { BaseProjectCommands } from "../shared/sharedCommands";
 
+
+type PythonPackageManager = "Venv" | "Poetry" | "None"
 export class PythonProjectCommands extends BaseProjectCommands {
   constructor(name: string, path: string, project_toast: any) {
     super(name, path, project_toast);
   }
+
+  async runInitialChecks(package_manager: PythonPackageManager, git_setup: GitSetup): Promise<boolean> {
+
+    let checker = (arr: boolean[]) => arr.every(Boolean)
+    let checks: Promise<boolean>[] = [];
+
+    checks.push(this.runProjectCheck())
+    checks.push(this.runSystemCheck(["python", "-V"]))
+
+    if (package_manager == "Poetry") {
+      checks.push(this.runSystemCheck(["poetry", "--version"]))
+    }
+    if (git_setup != "No Setup") {
+      checks.push(this.runSystemCheck(["git", "--version"]))
+    }
+    if (git_setup == "Create repo and connect") {
+      checks.push(this.runSystemCheck(["gh"]))
+    }
+
+
+
+    let values = await Promise.all(checks)
+
+    console.log(values)
+
+   
+
+    //return checker(values)
+
+    return checker(values)
+
+
+
+    
+
+    
+  }
+
+
   async CreateVenvEnv(): Promise<boolean> {
     // creates env in python using venv
     // TODO add check for not having venv
