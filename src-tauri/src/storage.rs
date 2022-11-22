@@ -3,7 +3,6 @@ use serde_json::Value;
 use serde_derive::{Deserialize, Serialize};
 use std::fs;
 use std::path::{Path, PathBuf};
-use std::ptr::read;
 use std::str;
 use serde_json::json;
 use std::ops::{Index, IndexMut};
@@ -83,14 +82,15 @@ pub fn get_settings_dir() -> Result<PathBuf, bool> {
     return Ok(storage_dir);
 }
 
-pub fn read_in_template_file() -> TemplateJSON {
+pub fn read_in_template_file() -> Result<TemplateJSON,String> {
     let settings_dir = get_settings_dir().unwrap().join("settings.json");
 
     let file = fs::read_to_string("C:\\Projects\\Tauri\\project-builder\\src-tauri\\src\\test.json").expect("Test JSON file wasn't found");
 
-    let test: TemplateJSON = serde_json::from_str(&file).expect("JSON was not well-formatted");
-
-    return test;
+    match serde_json::from_str(&file) {
+        Ok(result) => return result,
+        Err(err) => return Err("Template file was not formatted well".to_string())
+    }
 }
 
 
@@ -98,8 +98,10 @@ pub fn read_in_template_file() -> TemplateJSON {
 pub fn get_template_data(language: String) -> Result<TemplateData, String> {
 
     // create settings file path
-    // TODO error checking
-    let test = read_in_template_file();
+    let test = match read_in_template_file() {
+        Ok(result) => result,
+        Err(err) => return Err(err)
+    };
 
 
     let templates: &Vec<Template> = &test[&language].templates;
@@ -129,7 +131,10 @@ pub fn get_template_data(language: String) -> Result<TemplateData, String> {
 #[tauri::command]
 pub fn set_template_data(language: String, name: String, location: String) -> Result<(), String> {
     
-    let mut template_data: TemplateJSON = read_in_template_file();
+    let mut template_data: TemplateJSON =  match read_in_template_file() {
+        Ok(result) => result,
+        Err(err) => return Err(err),
+    };
 
     let templates: &mut Vec<Template> = &mut template_data[&language].templates;
 
@@ -142,25 +147,31 @@ pub fn set_template_data(language: String, name: String, location: String) -> Re
 
     
 
-    let json_data = serde_json::to_string(&template_data).unwrap();
+    let json_data = match serde_json::to_string(&template_data) {
+        Ok(result) => result,
+        Err(err) => return Err(err.to_string())
+    };
 
-    println!("{:?}", json_data);
-
+    // TODO update this directory
     fs::write("C:\\Projects\\Tauri\\project-builder\\src-tauri\\src\\test.json",json_data).unwrap();
 
-
-
-    
     Ok(())
 }
 
 #[tauri::command]
 pub fn get_template_path(name: String, language: String) -> String {
-    let template_data: TemplateData = get_template_data(language).expect("Template data couldn't be retrieved");
+    let template_data: TemplateData = match get_template_data(language) {
+        Ok(result) => result,
+        Err(_err) => return "Template data not found".to_string()
+    };
     let names = template_data.template_names;
     let locations = template_data.template_locations;
 
-    let index = names.iter().position(|r| r == &name).unwrap();
+    // get index of matching name 
+    let index = match names.iter().position(|r| r == &name) {
+        Some(result) => result,
+        None => return "Template name not found in data".to_string()
+    };
 
     // if website link replace backslashes
     let mut result = locations[index].clone();
@@ -176,35 +187,48 @@ pub fn get_template_path(name: String, language: String) -> String {
 pub async fn set_path_data(name: String, path: serde_json::Value) -> bool {
     // get local data directory and add on app name 
     // to create storage path
-    let storage_dir = get_settings_dir().unwrap();
+    let storage_dir = match get_settings_dir() {
+        Ok(result) => result,
+        Err(_) => return false
+    };
 
+    // convert json to bincode value
     let json_value = bincode::serialize(&serde_json::to_string_pretty(&path).unwrap()).unwrap();
 
-
-
-    fs::write(storage_dir.join(name), json_value).unwrap();
-
-    return true;
+    // write to file 
+    match fs::write(storage_dir.join(name), json_value) {
+        Ok(_result) => return true,
+        Err(_err) => return false,
+    };
 
 }
 
 
 #[tauri::command]
 pub fn get_path_data(key: &str) -> Result<PathData, String> {
-    let storage_dir = get_settings_dir().unwrap();
+    let storage_dir = match get_settings_dir() {
+        Ok(result) => result,
+        Err(_) => return Err("Path settings directory not found".to_string())
+    };
     
     let bin_file = match fs::read(storage_dir.join(key)) {
         Ok(file) => file,
         // if file not created yet 
-        Err(error) => {
+        Err(_error) => {
             let string: Value = json!("Unknown Path");
             return Ok(PathData { data: string, status: false })
         }
     };
 
-    let deser_data = bincode::deserialize(&bin_file).unwrap();
+    let deser_data = match bincode::deserialize(&bin_file) {
+        Ok(result) => result,
+        Err(_err) => return Err("Path data could not be deserialized".to_string())
+    };
 
-    let json_data = serde_json::from_str(deser_data).unwrap();
+    let json_data = match serde_json::from_str(deser_data) {
+        Ok(result) => result,
+        Err(_err) => return Err("Path data could not be converted to JSON".to_string())
+    };
 
     return Ok(
         PathData { data: json_data, status: true }
