@@ -41,7 +41,6 @@ export class PythonProjectCommands extends BaseProjectCommands {
       ...check_names.map((k, i) => ({ [k]: values[i] }))
     );
 
-
     for (const [key, value] of Object.entries(result)) {
       if (!value) {
         this.setToastError(`${key}`);
@@ -54,53 +53,49 @@ export class PythonProjectCommands extends BaseProjectCommands {
   async CreateVenvEnv(): Promise<boolean> {
     // creates env in python using venv
     this.setToastMessage("Creating venv...");
-    const env_command = await new Command("make_env", this.path, {
+    await new Command("make_env", this.path, {
       cwd: this.path,
     })
       .execute()
       .catch((err) => {
         this.setToastError(err);
+        return false;
       });
 
     this.setToastSuccess("Venv was created successfully");
 
-    return !!env_command;
+    return true;
   }
 
   async InitializePoetry() {
     // initializes poetry
     this.setToastMessage("Adding Poetry...");
-    const poetry_command = await new Command(
-      "cmd",
-      ["/C", "poetry", "init", "-n"],
-      { cwd: this.path }
-    )
+    await new Command("cmd", ["/C", "poetry", "init", "-n"], { cwd: this.path })
       .execute()
       .catch((err) => {
         this.setToastError("Poetry couldn't be initialized");
+        return false;
       });
 
     this.setToastSuccess("Poetry was initialized");
 
-    return !!poetry_command;
+    return true;
   }
-  async AddPoetryPackage(package_name: string) {
+  async AddPoetryPackage(package_name: string): Promise<boolean> {
     // TODO add multiple packages at once to speed it up
-    const install_command = await new Command(
-      "cmd",
-      ["/C", "poetry", "add", package_name],
-      {
-        cwd: this.path,
-      }
-    )
+    await new Command("cmd", ["/C", "poetry", "add", package_name], {
+      cwd: this.path,
+    })
       .execute()
       .then((_) => this.setToastSuccess(`${package_name} installed`))
-      .catch((err) => {
+      .catch((_err: any) => {
         this.setToastError(`${package_name} could not be installed`);
+        return false;
       });
+    return true;
   }
 
-  async AddVenvPackage(package_name: string) {
+  async AddVenvPackage(package_name: string): Promise<boolean> {
     console.log("In venv add");
     const venv_pack = await new Command(
       "cmd",
@@ -120,37 +115,73 @@ export class PythonProjectCommands extends BaseProjectCommands {
       .then((_) => this.setToastSuccess(`${package_name} installed`))
       .catch((err) => {
         this.setToastError(`${package_name} could not be installed`);
+        return false;
       });
+    return true;
   }
 
-  async createDjangoProject() {
-    // TODO make work with venv
+  async createDjangoProject(
+    package_manager: PythonPackageManager
+  ): Promise<boolean> {
     this.setToastMessage("Creating django project...");
-    // add django package
-    await this.AddPoetryPackage("django");
+    if (package_manager == "Poetry") {
+      await this.AddPoetryPackage("django");
 
-    const django_command = await new Command(
-      "cmd",
-      ["/C", "poetry", "run", "django-admin", "startproject", this.name],
-      {
-        cwd: this.path,
-      }
-    )
-      .execute()
-      .catch((err) => {
-        this.setToastError(`Django project could not be created`);
-      });
-    console.log(django_command);
+      await new Command(
+        "cmd",
+        ["/C", "poetry", "run", "django-admin", "startproject", this.name],
+        {
+          cwd: this.path,
+        }
+      )
+        .execute()
+        .catch((err) => {
+          this.setToastError(`Django project could not be created`);
+          return false;
+        });
+    }
+    if (package_manager == "Venv") {
+      await this.AddVenvPackage("django");
+      await new Command(
+        "cmd",
+        [
+          "/C",
+          "env\\Scripts\\activate.bat",
+          "&&",
+          "django-admin",
+          "startproject",
+          this.name,
+        ],
+        {
+          cwd: this.path,
+        }
+      )
+        .execute()
+        .catch((err) => {
+          this.setToastError(`Django project could not be created`);
+          return false;
+        });
+    }
+
     this.setToastSuccess(`Django project created`);
+    return true;
   }
 
-  async createFlaskProject() {
-    // TODO add general template?
+  async createFlaskProject(package_manager: PythonPackageManager): Promise<boolean> {
     this.setToastMessage("Creating flask project...");
-    await this.AddPoetryPackage("Flask").catch((err) => {
-      this.setToastError("Flask project couldn't be created");
-      return;
-    });
+    if (package_manager == "Poetry") {
+      await this.AddPoetryPackage("Flask").catch((err) => {
+        this.setToastError("Flask project couldn't be created");
+        return false;
+      });
+    }
+    else if (package_manager == "Venv") {
+      await this.AddVenvPackage("Flask").catch((_err) => {
+        this.setToastError("Flask project couldn't be created");
+        return false;
+      })
+    }
     this.setToastSuccess("Flask project created");
+    return true;
   }
 }

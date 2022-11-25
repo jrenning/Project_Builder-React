@@ -2,9 +2,7 @@ import React, { useState } from "react";
 import { z } from "zod";
 import { PythonSubmit } from "./PythonSubmit";
 import VSCodeButton from "../form_components/VSCodeButton";
-import Step1Form from "../form_components/Step1Form";
-import Step2Form from "./Step2Form";
-import { formSchema1 } from "../form_components/Step1Form";
+import Step2Form from "./Step2FormPython";
 import { useMultiStepForm } from "../../hooks/useMultiStepForm";
 
 export const overallPythonFormSchema = z.object({

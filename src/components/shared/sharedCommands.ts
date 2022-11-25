@@ -41,6 +41,8 @@ export class BaseProjectCommands {
     });
   }
 
+  /* Project Checks */
+
   async runProjectCheck (): Promise<boolean> {
     // return false if project already exists, true if it doesn't
     return !await invoke("path_exist",{path: this.path + "\\" + this.name})
@@ -57,6 +59,8 @@ export class BaseProjectCommands {
     let result = system_command.code == 1 ? false : true
     return result 
   }
+
+  /* File System Operations */
 
   async createProjectDirectory() {
     // makes project directory and returns new path to it
@@ -125,6 +129,8 @@ export class BaseProjectCommands {
     return true;
   }
 
+  /* Templates */
+
   async useTemplate(template: string, language: string): Promise<boolean> {
     let template_path: string = await invoke("get_template_path", {
       name: template,
@@ -153,6 +159,8 @@ export class BaseProjectCommands {
 
     return status;
   }
+
+  /* Git Stuff */
 
   async cloneGitRepo(link: string): Promise<boolean> {
 

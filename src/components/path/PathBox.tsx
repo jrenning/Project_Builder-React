@@ -34,13 +34,13 @@ const PathLocationCell = styled.div`
 
 
 function PathBox({ language, updater }: Props) {
-  const testPaths = useDefaultPath(language, updater)
+  const defaultPaths = useDefaultPath(language, updater)
 
   return (
     <div>
       <LanguageGrid>
         <PathNameCell>{language}</PathNameCell>
-        <PathLocationCell>{testPaths}</PathLocationCell>
+        <PathLocationCell>{defaultPaths}</PathLocationCell>
       </LanguageGrid>
     </div>
   );

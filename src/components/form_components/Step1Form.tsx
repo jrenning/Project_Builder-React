@@ -38,15 +38,14 @@ function Step1Form({ formData, setFormState, setFormStep, submitHandler, childre
   // whether or not a template should be asked for
   const [templateEnter, setTemplateEnter] = useState(false);
 
-  // add default path here
+  // set default path here
   const default_path = useDefaultPath(language);
   form.setValue("Path", default_path)
 
-
+  // get template names 
   const {template_names, template_locations} = useTemplates(language);
 
-
-
+  // check if template field should exist
   const checkTemplate = (data: ChangeEvent<HTMLSelectElement>) => {
     if (data.target.value == "Use Existing Template") {
       setTemplateEnter(true);

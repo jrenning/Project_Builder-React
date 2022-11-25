@@ -1,31 +1,24 @@
 import React, { ChangeEvent, useEffect, useState } from "react";
-import { z } from "zod";
-import { Form, useForm } from "../form_components/Form";
-import { SelectBox } from "../shared/SelectBox";
-import SubmitButton from "../form_components/SubmitButton";
-import { PythonFormState } from "./PythonForm";
-import FormButton from "../shared/FormButton";
-import { ButtonDiv } from "../../styles/FormStyles";
-import { Input } from "../form_components/Input";
-import { PythonSubmit } from "./PythonSubmit";
 import { ToastContainer } from "react-toastify";
+import { z } from "zod";
 import { useFormSubmit } from "../../hooks/useFormSubmit";
-import { useIsMount} from "../../hooks/useIsMount";
+import { useGithub } from "../../hooks/useGithub";
+import { ButtonDiv } from "../../styles/FormStyles";
+import { Form, useForm } from "../form_components/Form";
+import { Input } from "../form_components/Input";
+import SubmitButton from "../form_components/SubmitButton";
+import FormButton from "../shared/FormButton";
+import { SelectBox } from "../shared/SelectBox";
+import { overallPythonFormSchema, PythonFormState } from "./PythonForm";
+import { PythonSubmit } from "./PythonSubmit";
 
-export const formSchema2 = z.object({
-  Framework: z.enum(["Django", "Flask", "Vanilla"]),
-  Package_Manager: z.enum(["Venv", "Poetry", "None"]),
-  Git_Setup: z.enum([
-    "No Setup",
-    "Initialize Git",
-    "Create repo and connect",
-    "Connect to existing repo",
-  ]),
-  Github_Repo: z.string().optional(),
-  Packages: z.string().optional(),
+export const formSchema2 = overallPythonFormSchema.pick({
+  Framework: true,
+  Package_Manager: true,
+  Git_Setup: true,
+  Github_Repo: true,
+  Packages: true,
 });
-
-
 
 type Step2Data = z.infer<typeof formSchema2>;
 
@@ -36,52 +29,45 @@ type Props = {
   setPath: React.Dispatch<React.SetStateAction<any>>;
 };
 
-function Step2Form({ setFormState, formState,  setFormStep, setPath }: Props) {
-  const Step2Submit = (data: Step2Data) => {
+function Step2Form({ setFormState, formState, setFormStep, setPath }: Props) {
+  
+  const form = useForm({
+    schema: formSchema2,
+  });
+
+  const PythonStep2Submit = (data: Step2Data) => {
     setFormState((prevState: PythonFormState) => ({
       ...prevState,
       ...data,
     }));
   };
 
-
   // submits form when state is updated
   // only call when state has been fully updated
-  useFormSubmit(PythonSubmit,formState,setPath)
+  useFormSubmit(PythonSubmit, formState, setPath);
 
-  const goBack = () => {
+  const goBack = (e: any) => {
+    e.preventDefault()
     setFormStep(0);
   };
 
-  const form = useForm({
-    schema: formSchema2,
-  });
-
-  const checkGithub = (data: ChangeEvent<HTMLSelectElement>) => {
-    if (
-      data.target.value == "Connect to existing repo"
-    ) {
-      setGithub(true);
-    } else {
-      setGithub(false);
-    }
-  };
+  const [Github, checkGithub] = useGithub()
   // avoid needed to update selections every reload
   useEffect(() => {
     form.reset({
       Framework: formState.Framework ? formState.Framework : "Vanilla",
-      Package_Manager: formState.Package_Manager ? formState.Package_Manager : "None" ,
+      Package_Manager: formState.Package_Manager
+        ? formState.Package_Manager
+        : "None",
       Git_Setup: formState.Git_Setup ? formState.Git_Setup : "No Setup",
       Packages: formState.Packages ? formState.Packages : "",
     });
   }, []);
 
-  const [Github, setGithub] = useState(false);
-
   return (
     <>
       <ToastContainer />
-      <Form form={form} onSubmit={Step2Submit}>
+      <Form form={form} onSubmit={PythonStep2Submit}>
         <SelectBox
           select_name="Framework"
           select_label="Framework"

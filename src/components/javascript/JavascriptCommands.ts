@@ -16,44 +16,49 @@ export class JavascriptProjectCommands extends BaseProjectCommands {
       );
       return false;
     }
-    return true
+    return true;
   }
   async CreateReactApp(): Promise<boolean> {
-    // check for uppercase in project name
-    const upperCase = (string: string) => /[A-Z]/.test(string);
-
     this.setToastMessage("Creating CRA Project...");
 
+    // check for uppercase letter
     if (!this.checkUppercase) {
-      return false
+      return false;
     }
 
-    const react_command = await new Command(
-      "cmd",
-      ["/C", "npx", "create-react-app", this.name],
-      { cwd: this.path }
-    )
+    await new Command("cmd", ["/C", "npx", "create-react-app", this.name], {
+      cwd: this.path,
+    })
       .execute()
       .catch((err) => {
         this.setToastError(`Create react app failed, from ${err}`);
+        return false;
       });
 
     this.setToastSuccess("Created react app");
-    return !!react_command;
+    return true;
   }
 
   async createNextApp(): Promise<boolean> {
     // assume typescript for now
     // ? add option for non typescript
-    // check for uppercase name 
+    // check for uppercase name
     if (!this.checkUppercase) {
       return false;
     }
 
     this.setToastMessage("Creating next app...");
-    const next_command = await new Command(
+    await new Command(
       "cmd",
-      ["/C", "npx", "create-next-app@latest", this.name, "--typescript", "--eslint", "--use-npm"],
+      [
+        "/C",
+        "npx",
+        "create-next-app@latest",
+        this.name,
+        "--typescript",
+        "--eslint",
+        "--use-npm",
+      ],
       { cwd: this.path }
     )
       .execute()
@@ -65,8 +70,11 @@ export class JavascriptProjectCommands extends BaseProjectCommands {
     return true;
   }
 
-  async AddPackage(package_name: string, package_manager: string): Promise<boolean> {
-    const npm_command = await new Command(
+  async AddPackage(
+    package_name: string,
+    package_manager: string
+  ): Promise<boolean> {
+    await new Command(
       "cmd",
       ["/C", package_manager, "i", package_name],
       { cwd: this.path }
@@ -81,8 +89,8 @@ export class JavascriptProjectCommands extends BaseProjectCommands {
   }
 
   async initializeTailwind() {
-    this.setToastMessage("Adding tailwind...")
-    const tailwind_command = await new Command(
+    this.setToastMessage("Adding tailwind...");
+    await new Command(
       "cmd",
       ["/C", "npm", "install", "-D", "tailwindcss", "postcss", "autoprefixer"],
       { cwd: this.path }
@@ -92,7 +100,7 @@ export class JavascriptProjectCommands extends BaseProjectCommands {
         this.setToastError(`Tailwind couldn't be installed, see ${err}`);
         return false;
       });
-    const tailwind_init = await new Command(
+    await new Command(
       "cmd",
       ["/C", "npx", "tailwindcss", "init", "-p"],
       { cwd: this.path }
@@ -102,8 +110,7 @@ export class JavascriptProjectCommands extends BaseProjectCommands {
         this.setToastError(`Tailwind couldn't be installed, see ${err}`);
         return false;
       });
-      this.setToastSuccess("Tailwind was added")
+    this.setToastSuccess("Tailwind was added");
   }
 }
 
-// TODO add support for next and create react app templates

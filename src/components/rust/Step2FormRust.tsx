@@ -39,16 +39,16 @@ function Step2FormRust({
     schema: formSchema,
   });
 
-  // submits form when form state is updated
-  useFormSubmit(RustSubmit, formState, setPath);
-
-  const updateRustData = (data: Step2Data) => {
+  const RustStep2Submit = (data: Step2Data) => {
     // set the overall state
     setFormState((prevState: RustFormState) => ({
       ...prevState,
       ...data,
     }));
   };
+
+  // submits form when form state is updated
+  useFormSubmit(RustSubmit, formState, setPath);
 
   const goBack = (e: any) => {
     e.preventDefault();
@@ -72,7 +72,7 @@ function Step2FormRust({
   return (
     <>
       <ToastContainer />
-      <Form form={form} onSubmit={updateRustData}>
+      <Form form={form} onSubmit={RustStep2Submit}>
         <SelectBox
           select_name="Framework"
           select_label="Framework"

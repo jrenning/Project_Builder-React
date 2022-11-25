@@ -5,9 +5,7 @@ import { toast } from "react-toastify";
 import { z } from "zod";
 import FolderSelection from "../form_components/FolderSelection";
 import { Form, useForm } from "../form_components/Form";
-import { Input } from "../form_components/Input";
 import SubmitButton from "../form_components/SubmitButton";
-import FormButton from "../shared/FormButton";
 import { SelectBox } from "../shared/SelectBox";
 
 type Props = {
@@ -28,11 +26,13 @@ function PathForm({ names, setUpdater }: Props) {
   });
 
   const pathSubmit = async ({Language, Path}: FormData) => {
+    // set the new path 
     await invoke("set_path_data", {name: `${Language}_path`, path: Path})
     toast(`Default path for ${Language} set successfully`, {
       type: "success",
       hideProgressBar: true
     })
+    // update data in path table 
     setUpdater((prevState)=> !prevState)
   };
 

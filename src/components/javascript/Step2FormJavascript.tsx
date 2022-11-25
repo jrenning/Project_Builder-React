@@ -1,17 +1,17 @@
-import { Input } from "../form_components/Input";
 import React, { ChangeEvent, useEffect, useState } from "react";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { z } from "zod";
+import { useFormSubmit } from "../../hooks/useFormSubmit";
+import { useGithub } from "../../hooks/useGithub";
 import { ButtonDiv } from "../../styles/FormStyles";
 import { Form, useForm } from "../form_components/Form";
+import { Input } from "../form_components/Input";
 import SubmitButton from "../form_components/SubmitButton";
 import FormButton from "../shared/FormButton";
 import { SelectBox } from "../shared/SelectBox";
 import { JavascriptSubmit } from "./FormSubmit";
 import { overallFormSchemaJavascript, OverallJavascriptObject } from "./JavascriptForm";
-import "react-toastify/dist/ReactToastify.css";
-import {ToastContainer} from "react-toastify"
-import { z } from "zod";
-import { useFormSubmit } from "../../hooks/useFormSubmit";
-import { useGithub } from "../../hooks/useGithub";
 
 type Props = {
   setFormStep: React.Dispatch<React.SetStateAction<number>>;
@@ -35,7 +35,7 @@ function Step2FormJavascript({setFormStep, setFormState, formState, setPath}: Pr
     schema: formSchema,
   });
 
-  const createJavascriptProject = (data: Step2Data) => {
+  const JavascriptStep2Submit = (data: Step2Data) => {
     // set the overall state
     setFormState((prevState: OverallJavascriptObject) => ({
       ...prevState,
@@ -69,7 +69,7 @@ function Step2FormJavascript({setFormStep, setFormState, formState, setPath}: Pr
   return (
     <>
       <ToastContainer />
-      <Form form={form} onSubmit={createJavascriptProject}>
+      <Form form={form} onSubmit={JavascriptStep2Submit}>
         <SelectBox
           select_name="Framework"
           select_label="Framework"

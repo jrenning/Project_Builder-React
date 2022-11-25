@@ -48,9 +48,9 @@ export const PythonSubmit = async ({
 
     if (Framework) {
       if (Framework == "Django") {
-        await Project.createDjangoProject();
+        await Project.createDjangoProject(Package_Manager);
       } else if (Framework == "Flask") {
-        await Project.createFlaskProject();
+        await Project.createFlaskProject(Package_Manager);
       }
     }
 

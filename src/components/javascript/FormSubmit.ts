@@ -17,21 +17,20 @@ export const JavascriptSubmit = async ({
   Template,
   Packages,
 }: Javascript) => {
+  // initial notification
   const project_toast = toast("Creating project...");
+
   const Project = new JavascriptProjectCommands(
     Project_Name,
     Path,
     project_toast
   );
-
-  console.log(Framework);
-
+  // Handle Templates
   if (Template) {
-    Project.useTemplate(Template, "Javascript");
+    Project.useTemplate(Template, "javascript");
   } else if (Project_Type == "New Project") {
     if (Framework == "React (CRA)") {
       await Project.CreateReactApp();
-      return;
     }
     if (Framework == "Next") {
       await Project.createNextApp();
