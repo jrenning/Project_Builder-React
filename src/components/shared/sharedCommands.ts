@@ -46,13 +46,11 @@ export class BaseProjectCommands {
 
   async runSystemCheck(program_commands: string[]): Promise<boolean> {
     // check if program exists in command prompt
-    console.log('In here')
     let system_command = await new Command("cmd", ["/C", ...program_commands], {
       cwd: this.path,
     })
       .execute()
 
-    console.log(system_command)
     // 0 code is good 1 is fail 
     let result = system_command.code == 1 ? false : true
     return result 
@@ -75,7 +73,6 @@ export class BaseProjectCommands {
     }
 
     this.path = this.path + "\\" + this.name + "\\";
-    console.log(this.path);
     this.setToastMessage("Project Directory created successfully...");
 
     return !!dir_creation;
@@ -197,21 +194,16 @@ export class BaseProjectCommands {
 
   async GitSetup(Git_Setup: GitSetup) {
     if (Git_Setup == "Initialize Git") {
-      await handleError(
-        this.initializeGit(),
-        "Git was initialized",
-        "git i err"
-      );
-      await handleError(
-        this.createGitIgnore(),
-        "Gitignore was created",
-        "gitignore err"
-      );
+      await this.initializeGit()
+      await this.createGitIgnore()
     }
     if (Git_Setup == "Create repo and connect") {
-      // TODO
+      // TODO add auto push here after gitignore can be updated 
+      await this.initializeGit()
+      await this.createGithubRepo()
     }
     if (Git_Setup == "Connect to existing repo") {
+      //await this.linkToExistingGithub()
     }
   }
 
@@ -231,11 +223,13 @@ export class BaseProjectCommands {
     return !!git_add_command;
   }
   async createGithubRepo() {
-    const github_cli_comamnd = await new Command(
-      "github_cli_comamnd",
+    const github_cli_command = await new Command(
+      "cmd",
       [
-        "create",
+        "/C",
+        "gh",
         "repo",
+        "create",
         this.name,
         "--private",
         "--source=.",
@@ -244,11 +238,13 @@ export class BaseProjectCommands {
       { cwd: this.path }
     )
       .execute()
-      .catch(function (err) {
-        console.log(err);
-      });
+      // .then(()=> this.setToastSuccess("New Github repo created successfully."))
+      // .catch((err) => {
+      //   this.setToastError(`Error: ${err}`);
+      // });
 
-    return !!github_cli_comamnd;
+    console.log(github_cli_command)
+
   }
 
   async linkToExistingGithub(github_link: string) {
@@ -258,8 +254,8 @@ export class BaseProjectCommands {
       { cwd: this.path }
     )
       .execute()
-      .catch(function (err) {
-        console.log(err);
+      .catch((err) => {
+        this.setToastError(`Error: ${err}`);
       });
 
     const link = await new Command(
@@ -268,8 +264,8 @@ export class BaseProjectCommands {
       { cwd: this.path }
     )
       .execute()
-      .catch(function (err) {
-        console.log(err);
+      .catch((err) => {
+        this.setToastError(`Error: ${err}`);
       });
 
     const push_content = await new Command(
@@ -277,30 +273,26 @@ export class BaseProjectCommands {
       ["push", "-u", "origin", "main"],
       { cwd: this.path }
     )
-      .execute()
-      .catch(function (err) {
-        console.log(err);
-      });
+    .execute()
+    .then(()=>this.setToastSuccess(`Connected to repo at ${github_link}`))
+    .catch((err) => {
+      this.setToastError(`Error: ${err}`);
+    });
 
-    return !!push_content;
+    
   }
 }
 
 export const openVsCode = async (path: string) => {
   // opens new vscode window in directory, uses path passed by function
-  // TODO: add path checking to make sure its legit (could be higher up)
   const command: any = await new Command("cmd", ["/C", "code", "-n", "."], {
     cwd: path,
   })
     .execute()
-    .catch(function (err) {
-      console.log(err);
-    });
   // if theres an error show popup error message
-  // TODO change alert to a proper popup
   if (command["stderr"]) {
-    alert(
-      "VSCode CLI wasn't found, make sure you can run the code command in your terminal"
+    toast(
+      `${command["stderr"]}`
     );
   }
 };

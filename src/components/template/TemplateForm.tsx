@@ -1,5 +1,6 @@
 import { invoke } from "@tauri-apps/api";
 import React, { ChangeEvent, useState } from "react";
+import { toast } from "react-toastify";
 import { z } from "zod";
 import FolderSelection from "../form_components/FolderSelection";
 import { Form, useForm } from "../form_components/Form";
@@ -7,7 +8,11 @@ import { Input } from "../form_components/Input";
 import SubmitButton from "../form_components/SubmitButton";
 import { SelectBox } from "../shared/SelectBox";
 
-function TemplateForm() {
+type Props = {
+  setNeedToUpdateTemplates: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+function TemplateForm({ setNeedToUpdateTemplates }: Props) {
   const templateFormSchema = z.object({
     Template_Name: z.string().min(1, "Please enter a template name"),
     Language: z.enum(["Python", "Javascript", "Rust"]),
@@ -21,34 +26,57 @@ function TemplateForm() {
     schema: templateFormSchema,
   });
 
-  const [templateType, settemplateType] = useState("Local Folder");
+  const [templateType, setTemplateType] = useState("Local Folder");
 
   const updateTemplateType = (e: ChangeEvent<HTMLSelectElement>) => {
-    settemplateType(e.target.value);
+    setTemplateType(e.target.value);
   };
 
-  const templateSubmit = ({
+  const templateSubmit = async ({
     Path,
     Template_Name,
     Github_Link,
     Language,
   }: templateData) => {
-
-    // TODO add adding templates
     // lowercase language name to avoid key error
     Path
-      ? invoke("set_template_data", {
+      ? await invoke("set_template_data", {
           language: Language.toLowerCase(),
           name: Template_Name,
           location: Path,
         })
+          .then(() =>
+            toast(`Template ${Template_Name} added`, {
+              type: "success",
+              hideProgressBar: true,
+            })
+          )
+          .catch((err) => {
+            toast(`${err}`, {
+              type: "error",
+              hideProgressBar: true,
+            });
+          })
       : Github_Link
-      ? invoke("set_template_data", {
+      ? await invoke("set_template_data", {
           language: Language,
           name: Template_Name,
           location: Github_Link,
         })
+          .then(() =>
+            toast(`Template ${Template_Name} added`, {
+              type: "success",
+              hideProgressBar: true,
+            })
+          )
+          .catch((err) => {
+            toast(`${err}`, {
+              type: "error",
+              hideProgressBar: true,
+            });
+          })
       : "";
+
   };
 
   return (
@@ -72,6 +100,7 @@ function TemplateForm() {
         options={["Github Link"]}
         default_option=" Local Folder"
         control={form.control}
+        onChangeEvent={updateTemplateType}
       />
       {templateType == "Local Folder" ? (
         <FolderSelection form={form} />

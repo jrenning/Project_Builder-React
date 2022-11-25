@@ -1,6 +1,7 @@
 import { open } from "@tauri-apps/api/dialog";
 import { invoke } from "@tauri-apps/api/tauri";
 import React, { ChangeEvent, useState } from "react";
+import { toast } from "react-toastify";
 import { z } from "zod";
 import FolderSelection from "../form_components/FolderSelection";
 import { Form, useForm } from "../form_components/Form";
@@ -25,21 +26,16 @@ function PathForm({ names }: Props) {
     schema: formSchema,
   });
 
-  const testSubmit = ({Language, Path}: FormData) => {
-    console.log(Language)
-    invoke("set_path_data", {name: `${Language}_path`, path: Path})
-    console.log("path is added")
+  const pathSubmit = async ({Language, Path}: FormData) => {
+    await invoke("set_path_data", {name: `${Language}_path`, path: Path})
+    toast(`Default path for ${Language} set successfully`, {
+      type: "success",
+      hideProgressBar: true
+    })
   };
-
-  const [Language, setLanguage] = useState("");
-
-  const changeLanguage = (e: ChangeEvent<HTMLSelectElement>) => {
-    // TODO update language path
-  };
-
 
   return (
-    <Form form={form} onSubmit={testSubmit}>
+    <Form form={form} onSubmit={pathSubmit}>
       <SelectBox
         select_name="Language"
         default_option="Select Language"

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Header from '../components/shared/Header'
 import { ThemeProvider } from "styled-components";
 import { theme } from "../styles/Theme";
@@ -8,13 +8,14 @@ import TemplateView from '../components/shared/LanguageGridView';
 import TemplateBox from '../components/template/TemplateBox';
 
 function TemplateSettings() {
+  const [needToUpdateTemplates, setNeedToUpdateTemplates] = useState(false)
   return (
     <ThemeProvider theme={theme}>
       <div>
         <Header name="Template Settings" arrow={true} link="/" />
         <SubHeader name="Templates" />
         <TemplateView BoxViewComponent={TemplateBox}/>
-        <TemplateForm />
+        <TemplateForm setNeedToUpdateTemplates={setNeedToUpdateTemplates}/>
       </div>
     </ThemeProvider>
   );

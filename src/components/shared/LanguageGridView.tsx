@@ -16,11 +16,12 @@ const TemplateViewDiv = styled.div`
 `
 
 type Props = {
-    BoxViewComponent: any
-}
+  BoxViewComponent: any;
+  updateHandler?: React.Dispatch<React.SetStateAction<boolean>>;
+};
 
 
-function TemplateView({BoxViewComponent}: Props) {
+function TemplateView({BoxViewComponent, updateHandler}: Props) {
   const [templateLanguages, setTemplateLanguages] = useState(languages);
   const updateTemplateLanguage = (e: ChangeEvent<HTMLSelectElement>) => {
     if (e.target.value == "All") {
@@ -43,7 +44,7 @@ function TemplateView({BoxViewComponent}: Props) {
           </select>
         </LanguageSelect>
         {templateLanguages.map((language, index) => (
-          <BoxViewComponent language={language} key={index} />
+          <BoxViewComponent language={language} key={language} />
         ))}
     </TemplateViewDiv>
   );

@@ -59,7 +59,6 @@ function Step2Form({ setFormState, formState,  setFormStep, setPath }: Props) {
 
   const checkGithub = (data: ChangeEvent<HTMLSelectElement>) => {
     if (
-      data.target.value == "Create repo and connect" ||
       data.target.value == "Connect to existing repo"
     ) {
       setGithub(true);

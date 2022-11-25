@@ -78,6 +78,11 @@
             "args": ["add", { "validator": "\\S+" }]
           }
         ]
+      },
+      "http": {
+        "all": false,
+        "request": true,
+        "scope": ["https://github.com/*"]
       }
     },
     "bundle": {

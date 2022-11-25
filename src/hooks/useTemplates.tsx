@@ -27,3 +27,5 @@ export const useTemplates = (language: string): TemplateResponseData => {
     template_locations: templateLocations,
   };
 };
+
+

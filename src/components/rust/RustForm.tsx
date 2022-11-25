@@ -19,7 +19,7 @@ export const overallRustFormSchema = z.object({
     "Connect to existing repo",
   ]),
   Github_Repo: z.string().optional(),
-  Packages: z.string(),
+  Packages: z.string().optional(),
 });
 
 export type RustFormState = z.infer<typeof overallRustFormSchema>;

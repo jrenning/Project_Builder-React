@@ -21,7 +21,7 @@ export const overallPythonFormSchema = z.object({
     "Connect to existing repo",
   ]),
   Github_Repo: z.string().optional(),
-  Packages: z.string(),
+  Packages: z.string().optional(),
 });
 
 export type PythonFormState = z.infer<typeof overallPythonFormSchema>;
@@ -34,7 +34,7 @@ export default function PythonForm() {
     Framework: "Vanilla",
     Package_Manager: "None",
     Git_Setup: "No Setup",
-    Packages: [""],
+    Packages: "",
   };
 
   const [path, setPath] = useState("")

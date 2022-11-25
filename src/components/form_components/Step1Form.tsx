@@ -1,14 +1,15 @@
-import React, { useEffect, useState, ChangeEvent } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { z } from "zod";
+import { useDefaultPath } from "../../hooks/useDefaultPaths";
+import { overallOptions } from "../../hooks/useMultiStepForm";
+import { useTemplates } from "../../hooks/useTemplates";
+import { SelectBox } from "../shared/SelectBox";
+import FolderSelection from "./FolderSelection";
 import { Form, useForm } from "./Form";
 import { Input } from "./Input";
-import { SelectBox } from "../shared/SelectBox";
 import SubmitButton from "./SubmitButton";
-import { overallOptions } from "../../hooks/useMultiStepForm";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import FolderSelection from "./FolderSelection";
-import { useTemplates } from "../../hooks/useTemplates";
 
 export const formSchema1 = z.object({
   Project_Name: z.string().min(1, "Please enter a name"),
@@ -37,7 +38,9 @@ function Step1Form({ formData, setFormState, setFormStep, submitHandler, childre
   // whether or not a template should be asked for
   const [templateEnter, setTemplateEnter] = useState(false);
 
-  // TODO add default path here
+  // add default path here
+  const default_path = useDefaultPath(language);
+  form.setValue("Path", default_path)
 
 
   const {template_names, template_locations} = useTemplates(language);

@@ -1,7 +1,7 @@
-import React, { Component } from 'react'
-import styled from 'styled-components'
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import styled from 'styled-components';
 
 
 const LandingHeader = styled.header`

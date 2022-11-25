@@ -21,7 +21,7 @@ pub struct TemplateData {
     pub template_locations: Vec<String>,
 }
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct Template {
     name: String,
     location: String,
@@ -85,11 +85,11 @@ pub fn get_settings_dir() -> Result<PathBuf, bool> {
 pub fn read_in_template_file() -> Result<TemplateJSON,String> {
     let settings_dir = get_settings_dir().unwrap().join("settings.json");
 
-    let file = fs::read_to_string("C:\\Projects\\Tauri\\project-builder\\src-tauri\\src\\test.json").expect("Test JSON file wasn't found");
+    let file = fs::read_to_string(&settings_dir).expect("Test JSON file wasn't found");
 
     match serde_json::from_str(&file) {
-        Ok(result) => return result,
-        Err(err) => return Err("Template file was not formatted well".to_string())
+        Ok(result) => return Ok(result),
+        Err(_err) => {return Err("Template file was not well formatted".to_string())}
     }
 }
 
@@ -100,7 +100,7 @@ pub fn get_template_data(language: String) -> Result<TemplateData, String> {
     // create settings file path
     let test = match read_in_template_file() {
         Ok(result) => result,
-        Err(err) => return Err(err)
+        Err(err) => {return Err(err)}
     };
 
 
@@ -130,6 +130,8 @@ pub fn get_template_data(language: String) -> Result<TemplateData, String> {
 
 #[tauri::command]
 pub fn set_template_data(language: String, name: String, location: String) -> Result<(), String> {
+
+    let settings_dir = get_settings_dir().unwrap().join("settings.json");
     
     let mut template_data: TemplateJSON =  match read_in_template_file() {
         Ok(result) => result,
@@ -137,6 +139,15 @@ pub fn set_template_data(language: String, name: String, location: String) -> Re
     };
 
     let templates: &mut Vec<Template> = &mut template_data[&language].templates;
+
+    // check if name already exists
+    for template in templates.clone() {
+        if name == template.name {
+            return Err("Template name already exists".to_string());
+        }
+    }
+
+
 
     let new_key_value: Template = Template {
         name,
@@ -152,8 +163,36 @@ pub fn set_template_data(language: String, name: String, location: String) -> Re
         Err(err) => return Err(err.to_string())
     };
 
-    // TODO update this directory
-    fs::write("C:\\Projects\\Tauri\\project-builder\\src-tauri\\src\\test.json",json_data).unwrap();
+    fs::write(&settings_dir,json_data).unwrap();
+
+    Ok(())
+}
+
+#[tauri::command]
+pub fn delete_template_data(language: String, name: String)-> Result<(),String> {
+
+    let settings_dir = get_settings_dir().unwrap().join("settings.json");
+    let mut template_data: TemplateJSON =  match read_in_template_file() {
+        Ok(result) => result,
+        Err(err) => return Err(err),
+    };
+
+    let templates: &mut Vec<Template> = &mut template_data[&language].templates;
+
+    let template_copy = templates.clone();
+
+    for (index, template) in template_copy.iter().enumerate() {
+        if template.name == name {
+                templates.remove(index);
+        }
+    }
+
+    let json_data = match serde_json::to_string(&template_data) {
+        Ok(result) => result,
+        Err(err) => return Err(err.to_string())
+    };
+
+    fs::write(&settings_dir,json_data).unwrap();
 
     Ok(())
 }

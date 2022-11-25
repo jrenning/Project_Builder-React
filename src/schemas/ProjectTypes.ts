@@ -3,3 +3,9 @@ export type GitSetup =
   | "Initialize Git"
   | "Create repo and connect"
   | "Connect to existing repo";
+
+
+export type StringIndexedObject<T> = {
+  [key: string]: T
+}
+
