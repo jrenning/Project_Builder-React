@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Header from "../components/shared/Header";
 import { ThemeProvider } from "styled-components";
 import { theme } from "../styles/Theme";
@@ -8,6 +8,7 @@ import PathForm from '../components/path/PathForm';
 import { FormLabel } from '../styles/FormStyles';
 import TemplateView from '../components/shared/LanguageGridView';
 import PathBox from '../components/path/PathBox';
+import { ToastContainer } from 'react-toastify';
 
 
 const PathDiv = styled.div`
@@ -24,13 +25,16 @@ const PathTitle = styled.h1`
 `
 
 function PathSettings() {
+
+  const [needToUpdatePaths, setNeedToUpdatePaths] = useState(false)
   return (
     <ThemeProvider theme={theme}>
+      <ToastContainer />
       <Header name="Path Settings" arrow={true} link="/"></Header>
-      <TemplateView BoxViewComponent={PathBox} />
+      <TemplateView BoxViewComponent={PathBox} updater={needToUpdatePaths} setUpdater={setNeedToUpdatePaths} />
       <PathTitle>Choose Default Path</PathTitle>
       <PathDiv>
-        <PathForm names={["Python", "Javascript", "Rust"]} />
+        <PathForm names={["Python", "Javascript", "Rust"]} setUpdater={setNeedToUpdatePaths} />
       </PathDiv>
     </ThemeProvider>
   );

@@ -6,7 +6,7 @@ type TemplateResponseData = {
   template_locations: string[];
 };
 
-export const useTemplates = (language: string): TemplateResponseData => {
+export const useTemplates = (language: string, updater?: boolean): TemplateResponseData => {
   const [templateNames, setTemplateNames] = useState([""]);
   const [templateLocations, setTemplateLocations] = useState([""]);
 
@@ -20,7 +20,7 @@ export const useTemplates = (language: string): TemplateResponseData => {
       setTemplateLocations(response.template_locations);
     }
     fetchTemplates();
-  }, []);
+  }, [updater]);
 
   return {
     template_names: templateNames,

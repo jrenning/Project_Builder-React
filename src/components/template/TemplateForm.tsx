@@ -12,7 +12,7 @@ type Props = {
   setNeedToUpdateTemplates: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-function TemplateForm({ setNeedToUpdateTemplates }: Props) {
+function TemplateForm({setNeedToUpdateTemplates}: Props) {
   const templateFormSchema = z.object({
     Template_Name: z.string().min(1, "Please enter a template name"),
     Language: z.enum(["Python", "Javascript", "Rust"]),
@@ -76,6 +76,8 @@ function TemplateForm({ setNeedToUpdateTemplates }: Props) {
             });
           })
       : "";
+
+      setNeedToUpdateTemplates((prevState)=> !prevState);
 
   };
 

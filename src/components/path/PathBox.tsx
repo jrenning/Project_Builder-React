@@ -4,6 +4,7 @@ import { useDefaultPath } from "../../hooks/useDefaultPaths";
 
 type Props = {
   language: string;
+  updater: boolean;
 };
 
 const LanguageGrid = styled.div`
@@ -32,8 +33,8 @@ const PathLocationCell = styled.div`
 `;
 
 
-function PathBox({ language }: Props) {
-  const testPaths = useDefaultPath(language)
+function PathBox({ language, updater }: Props) {
+  const testPaths = useDefaultPath(language, updater)
 
   return (
     <div>

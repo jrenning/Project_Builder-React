@@ -6,8 +6,16 @@ type PathResponseData = {
     status: boolean
 }
 
-
-export const useDefaultPath = (language: string) => {
+/**
+ * 
+ * @param language the programming language the path is being set for 
+ * @param updater an updater that should change when the paths need to be updated, 
+ * ex. called when using the update default path form 
+ * @returns 
+ *          defaultPath = the default path for the language 
+ * 
+ */
+export const useDefaultPath = (language: string, updater?: boolean) => {
 
     const [defaultPath, setDefaultPath] = useState("")
 
@@ -17,7 +25,7 @@ export const useDefaultPath = (language: string) => {
             setDefaultPath(response.data)
         }
         fetchPaths()
-    }, [])
+    }, [updater])
 
 
 

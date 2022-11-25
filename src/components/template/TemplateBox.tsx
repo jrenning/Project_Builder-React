@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useTemplates } from "../../hooks/useTemplates";
@@ -8,6 +8,8 @@ import { toast } from "react-toastify";
 
 type Props = {
   language: string;
+  updater: boolean
+  setUpdater: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const LanguageGrid = styled.div`
@@ -38,8 +40,11 @@ const TemplateTitle = styled.h1`
   color: white;
 `;
 
-function TemplateBox({ language }: Props) {
-  const { template_names, template_locations } = useTemplates(language);
+function TemplateBox({ language, updater, setUpdater }: Props) {
+
+  const { template_names, template_locations } = useTemplates(language, updater);
+
+  
 
   const handleTemplateDelete = async (e: any, name: string, language: string) => {
     const result = await invoke("delete_template_data", {

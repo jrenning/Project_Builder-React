@@ -12,6 +12,7 @@ import { SelectBox } from "../shared/SelectBox";
 
 type Props = {
   names: string[];
+  setUpdater: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const formSchema = z.object({
@@ -21,7 +22,7 @@ const formSchema = z.object({
 
 type FormData = z.infer<typeof formSchema>
 
-function PathForm({ names }: Props) {
+function PathForm({ names, setUpdater }: Props) {
   const form = useForm({
     schema: formSchema,
   });
@@ -32,6 +33,7 @@ function PathForm({ names }: Props) {
       type: "success",
       hideProgressBar: true
     })
+    setUpdater((prevState)=> !prevState)
   };
 
   return (
