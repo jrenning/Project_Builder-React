@@ -5,7 +5,6 @@ import { ChangeEvent, useState } from "react";
  * @returns 
  */
 export const useGithub = (
-  data: ChangeEvent<HTMLSelectElement>
 ): [boolean, (data: ChangeEvent<HTMLSelectElement>) => void] => {
   const [Github, setGithub] = useState(false);
 

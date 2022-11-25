@@ -4,6 +4,10 @@ A desktop application that enables the building of programming projects
 
 **Note this repository is still heavily in development and is highly likely to change**
 
+## Goals
+- Add tests
+- Clean up UI
+
 ## Features 
 - Ability to create projects using multiple programming languages
 - Creation of templates from local folders or github repositories 

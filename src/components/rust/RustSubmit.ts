@@ -15,21 +15,31 @@ export const RustSubmit = async ({
   const project_toast = toast("Creating project...");
   const Project = new RustProjectCommands(Project_Name, Path, project_toast);
 
+  const checks = await Project.runInitialChecks(Package_Manager, Git_Setup)
+
+  if (!checks) {
+    return
+  }
+
   if (Template) {
-    await Project.useTemplate(Template, "python");
+    await Project.useTemplate(Template, "rust");
   } else {
     // create outer directory
-    await Project.createProjectDirectory();
+    if (Package_Manager == "Cargo") {
+          await Project.InitializeCargo();
+    }
+    else {
+         await Project.createProjectDirectory();
+    }
+    
 
     if (Framework) {
       // TODO rust framework?
     }
 
-    if (Package_Manager == "Cargo") {
-      await Project.InitializeCargo();
-    }
 
-    if (Packages) {
+
+    if (Packages && Package_Manager == "Cargo") {
       let packages = Packages.split(",");
       packages = packages.map((pack) => {
         return pack.trim();

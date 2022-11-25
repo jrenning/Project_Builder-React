@@ -18,10 +18,12 @@ export class BaseProjectCommands {
 
   /* Toast Update Methods*/
 
-  setToastMessage(message: string) {
+  setToastMessage(message: string, noProgress?: boolean) {
     toast.update(this.project_toast, {
       render: message,
       type: toast.TYPE.INFO,
+      hideProgressBar: noProgress && true,
+      autoClose: noProgress && false
     });
   }
 
@@ -97,6 +99,7 @@ export class BaseProjectCommands {
 
   async copyDirectory(path: string): Promise<boolean> {
     // copy directory to chosen path location
+    this.setToastMessage("Copying template project...",true)
 
     // get last part of copy path
     let trailing = path.match(/[^\\]+$/)
@@ -152,6 +155,8 @@ export class BaseProjectCommands {
   }
 
   async cloneGitRepo(link: string): Promise<boolean> {
+
+    this.setToastMessage("Cloning template from github...")
 
     const git_clone = await new Command("git-clone", ["clone", link, "."], {
       cwd: this.path,

@@ -11,7 +11,7 @@ export const overallRustFormSchema = z.object({
   Path: z.string(),
   Template: z.string().optional(),
   Framework: z.enum(["Vanilla"]),
-  Package_Manager: z.enum(["Cargo", "None"]),
+  Package_Manager: z.enum(["Cargo"]),
   Git_Setup: z.enum([
     "No Setup",
     "Initialize Git",

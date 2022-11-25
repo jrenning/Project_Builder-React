@@ -63,7 +63,7 @@ function Step2FormRust({
       Framework: formState.Framework ? formState.Framework : "Vanilla",
       Package_Manager: formState.Package_Manager
         ? formState.Package_Manager
-        : "None",
+        : "Cargo",
       Git_Setup: formState.Git_Setup ? formState.Git_Setup : "No Setup",
       Packages: formState.Packages ? formState.Packages : "",
     });
@@ -77,12 +77,12 @@ function Step2FormRust({
           select_name="Framework"
           select_label="Framework"
           default_option="Vanilla"
-          options={[""]}
+          options={[]}
           control={form.control}
         />
         <SelectBox
           default_option="Cargo"
-          options={["None"]}
+          options={[]}
           select_name="Package_Manager"
           select_label="Package Manager"
           control={form.control}
