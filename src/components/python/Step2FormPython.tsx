@@ -9,18 +9,11 @@ import { Input } from "../form_components/Input";
 import SubmitButton from "../form_components/SubmitButton";
 import FormButton from "../shared/FormButton";
 import { SelectBox } from "../shared/SelectBox";
-import { overallPythonFormSchema, PythonFormState } from "./PythonForm";
+import { PythonFormState, overallPythonFormSchema } from "./PythonForm";
 import { PythonSubmit } from "./PythonSubmit";
 
-export const formSchema2 = overallPythonFormSchema.pick({
-  Framework: true,
-  Package_Manager: true,
-  Git_Setup: true,
-  Github_Repo: true,
-  Packages: true,
-});
 
-type Step2Data = z.infer<typeof formSchema2>;
+
 
 type Props = {
   setFormState: React.Dispatch<React.SetStateAction<any>>;
@@ -31,6 +24,16 @@ type Props = {
 
 function Step2Form({ setFormState, formState, setFormStep, setPath }: Props) {
   
+  const formSchema2 = overallPythonFormSchema.pick({
+    Framework: true,
+    Package_Manager: true,
+    Git_Setup: true,
+    Github_Repo: true,
+    Packages: true,
+  });
+
+  type Step2Data = z.infer<typeof formSchema2>;
+
   const form = useForm({
     schema: formSchema2,
   });

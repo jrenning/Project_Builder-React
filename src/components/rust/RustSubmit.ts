@@ -9,16 +9,22 @@ export const RustSubmit = async ({
   Framework,
   Package_Manager,
   Project_Type,
+  Github_Repo,
   Packages,
   Template,
 }: RustFormState) => {
   const project_toast = toast("Creating project...");
+  const progress_toast = toast("Project being created...", {
+    hideProgressBar: true,
+    autoClose: false,
+  });
+
   const Project = new RustProjectCommands(Project_Name, Path, project_toast);
 
-  const checks = await Project.runInitialChecks(Package_Manager, Git_Setup)
+  const checks = await Project.runInitialChecks(Package_Manager, Git_Setup);
 
   if (!checks) {
-    return
+    return;
   }
 
   if (Template) {
@@ -26,18 +32,14 @@ export const RustSubmit = async ({
   } else {
     // create outer directory
     if (Package_Manager == "Cargo") {
-          await Project.InitializeCargo();
+      await Project.InitializeCargo();
+    } else {
+      await Project.createProjectDirectory();
     }
-    else {
-         await Project.createProjectDirectory();
-    }
-    
 
     if (Framework) {
       // TODO rust framework?
     }
-
-
 
     if (Packages && Package_Manager == "Cargo") {
       let packages = Packages.split(",");
@@ -49,15 +51,12 @@ export const RustSubmit = async ({
       });
     }
 
-    Project.GitSetup(Git_Setup);
+    Project.GitSetup(Git_Setup, Github_Repo);
   }
   // final success message, made async to avoid it happening out of order
-  const makeThisAsync = async () => {
-    toast.update(project_toast, {
-      type: toast.TYPE.SUCCESS,
-      render: `Project ${Project_Name} created at ${Project.path}`,
-      autoClose: 5000,
-    });
-  };
-  await makeThisAsync();
+  toast.update(progress_toast, {
+    type: toast.TYPE.SUCCESS,
+    render: `Project ${Project_Name} created at ${Project.path}`,
+    autoClose: 5000,
+  });
 };

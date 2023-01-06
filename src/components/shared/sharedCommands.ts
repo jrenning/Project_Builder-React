@@ -205,7 +205,7 @@ export class BaseProjectCommands {
     return !!gitignore;
   }
 
-  async GitSetup(Git_Setup: GitSetup) {
+  async GitSetup(Git_Setup: GitSetup, Github_Repo: string="") {
     if (Git_Setup == "Initialize Git") {
       await this.initializeGit()
       await this.createGitIgnore()
@@ -216,7 +216,10 @@ export class BaseProjectCommands {
       await this.createGithubRepo()
     }
     if (Git_Setup == "Connect to existing repo") {
-      //await this.linkToExistingGithub()
+      if (Github_Repo) {
+        await this.linkToExistingGithub(Github_Repo)
+
+      }
     }
   }
 
@@ -298,6 +301,15 @@ export class BaseProjectCommands {
 
 export const openVsCode = async (path: string) => {
   // opens new vscode window in directory, uses path passed by function
+
+  const path_exist = await invoke("path_exist", {path: path})
+
+  if (!path_exist) {
+    toast(`The project could not be opened as the path ${path} is invalid`, {
+      type: "error"
+    });
+  }
+
   const command: any = await new Command("cmd", ["/C", "code", "-n", "."], {
     cwd: path,
   })

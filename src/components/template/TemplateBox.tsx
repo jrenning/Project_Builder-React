@@ -41,12 +41,16 @@ const TemplateTitle = styled.h1`
 `;
 
 function TemplateBox({ language, updater, setUpdater }: Props) {
+  const { template_names, template_locations } = useTemplates(
+    language,
+    updater
+  );
 
-  const { template_names, template_locations } = useTemplates(language, updater);
-
-  
-
-  const handleTemplateDelete = async (e: any, name: string, language: string) => {
+  const handleTemplateDelete = async (
+    e: any,
+    name: string,
+    language: string
+  ) => {
     const result = await invoke("delete_template_data", {
       language: language.toLowerCase(),
       name: name,
@@ -57,13 +61,14 @@ function TemplateBox({ language, updater, setUpdater }: Props) {
           hideProgressBar: true,
         })
       )
-      .catch( () =>
+      .catch(() =>
         toast(`Template ${name} could not be deleted`, {
           type: "error",
           hideProgressBar: true,
         })
       );
 
+    setUpdater((prevState) => !prevState);
   };
 
   return (

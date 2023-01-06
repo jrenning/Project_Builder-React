@@ -59,7 +59,7 @@ function TemplateForm({setNeedToUpdateTemplates}: Props) {
           })
       : Github_Link
       ? await invoke("set_template_data", {
-          language: Language,
+          language: Language.toLowerCase(),
           name: Template_Name,
           location: Github_Link,
         })

@@ -32,7 +32,7 @@ function RustForm() {
     Framework: "",
     Package_Manager: "Cargo",
     Git_Setup: "No Setup",
-    Packages: [""],
+    Packages: "",
   };
 
   const [path, setPath] = useState("");

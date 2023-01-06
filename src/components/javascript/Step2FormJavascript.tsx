@@ -11,7 +11,10 @@ import SubmitButton from "../form_components/SubmitButton";
 import FormButton from "../shared/FormButton";
 import { SelectBox } from "../shared/SelectBox";
 import { JavascriptSubmit } from "./FormSubmit";
-import { overallFormSchemaJavascript, OverallJavascriptObject } from "./JavascriptForm";
+import {
+  overallFormSchemaJavascript,
+  OverallJavascriptObject,
+} from "./JavascriptForm";
 
 type Props = {
   setFormStep: React.Dispatch<React.SetStateAction<number>>;
@@ -20,13 +23,19 @@ type Props = {
   setPath: React.Dispatch<React.SetStateAction<any>>;
 };
 
-function Step2FormJavascript({setFormStep, setFormState, formState, setPath}: Props) {
+function Step2FormJavascript({
+  setFormStep,
+  setFormState,
+  formState,
+  setPath,
+}: Props) {
   const formSchema = overallFormSchemaJavascript.pick({
     Framework: true,
     Package_Manager: true,
     Git_Setup: true,
     Github_Repo: true,
     Packages: true,
+    CSS: true,
   });
 
   type Step2Data = z.infer<typeof formSchema>;
@@ -51,8 +60,7 @@ function Step2FormJavascript({setFormStep, setFormState, formState, setPath}: Pr
     setFormStep(0);
   };
 
-
-  const [Github, checkGithub] = useGithub()
+  const [Github, checkGithub] = useGithub();
 
   // avoid needed to update selections every reload
   useEffect(() => {
@@ -63,6 +71,7 @@ function Step2FormJavascript({setFormStep, setFormState, formState, setPath}: Pr
         : "None",
       Git_Setup: formState.Git_Setup ? formState.Git_Setup : "No Setup",
       Packages: formState.Packages ? formState.Packages : "",
+      CSS: formState.CSS ? formState.CSS : "Plain CSS",
     });
   }, []);
 
@@ -82,6 +91,13 @@ function Step2FormJavascript({setFormStep, setFormState, formState, setPath}: Pr
           options={["None", "yarn"]}
           select_name="Package_Manager"
           select_label="Package Manager"
+          control={form.control}
+        />
+        <SelectBox
+          default_option="Plain CSS"
+          options={["Tailwind", "Styled Components"]}
+          select_name="CSS"
+          select_label="CSS"
           control={form.control}
         />
         <SelectBox
@@ -111,6 +127,7 @@ function Step2FormJavascript({setFormStep, setFormState, formState, setPath}: Pr
           placeholder="Packages"
           {...form.register("Packages")}
         />
+
         <ButtonDiv>
           <FormButton name="Back" onClick={goBack} />
           <SubmitButton name="Create Project" />

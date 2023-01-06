@@ -1,9 +1,55 @@
 import { Command } from "@tauri-apps/api/shell";
+import { GitSetup, StringIndexedObject } from "../../schemas/ProjectTypes";
 import { BaseProjectCommands } from "../shared/sharedCommands";
+
+type JavascriptPackageManager = "npm" | "yarn" | "None";
 
 export class JavascriptProjectCommands extends BaseProjectCommands {
   constructor(name: string, path: string, project_toast: any) {
     super(name, path, project_toast);
+  }
+
+  async runInitialChecks(
+    package_manager: JavascriptPackageManager,
+    git_setup: GitSetup
+  ): Promise<boolean> {
+    let check_names = [];
+    let checks: Promise<boolean>[] = [];
+
+    checks.push(this.runProjectCheck());
+    check_names.push("Project already exists");
+
+    if (package_manager == "npm") {
+      checks.push(this.runSystemCheck(["poetry", "--version"]));
+      check_names.push("npm is not installed");
+    }
+    if (package_manager == "yarn") {
+      checks.push(this.runSystemCheck(["yarn", "-V"]));
+      check_names.push("Yarn is not installed");
+    }
+    if (git_setup != "No Setup") {
+      checks.push(this.runSystemCheck(["git", "--version"]));
+      check_names.push("Git is not installed");
+    }
+    if (git_setup == "Create repo and connect") {
+      checks.push(this.runSystemCheck(["gh"]));
+      check_names.push("Github cli is not installed");
+    }
+
+    let values = await Promise.all(checks);
+
+    let result: StringIndexedObject<boolean> = Object.assign(
+      //@ts-ignore
+      ...check_names.map((k, i) => ({ [k]: values[i] }))
+    );
+
+    for (const [key, value] of Object.entries(result)) {
+      if (!value) {
+        this.setToastError(`${key}`);
+        return false;
+      }
+    }
+    return true;
   }
 
   checkUppercase(): boolean {
@@ -36,6 +82,9 @@ export class JavascriptProjectCommands extends BaseProjectCommands {
       });
 
     this.setToastSuccess("Created react app");
+
+    //set new path
+    this.path = this.path + "\\" + this.name + "\\";
     return true;
   }
 
@@ -43,12 +92,13 @@ export class JavascriptProjectCommands extends BaseProjectCommands {
     // assume typescript for now
     // ? add option for non typescript
     // check for uppercase name
-    if (!this.checkUppercase) {
+    if (!this.checkUppercase()) {
       return false;
     }
 
+
     this.setToastMessage("Creating next app...");
-    await new Command(
+    let test = await new Command(
       "cmd",
       [
         "/C",
@@ -66,7 +116,12 @@ export class JavascriptProjectCommands extends BaseProjectCommands {
         this.setToastError(`Next app couldn't be created, see ${err}`);
         return false;
       });
+
+
     this.setToastSuccess("Created next app");
+
+    // set new path
+    this.path = this.path + "\\" + this.name + "\\";
     return true;
   }
 
@@ -74,12 +129,24 @@ export class JavascriptProjectCommands extends BaseProjectCommands {
     package_name: string,
     package_manager: string
   ): Promise<boolean> {
-    await new Command(
-      "cmd",
-      ["/C", package_manager, "i", package_name],
-      { cwd: this.path }
-    )
+    // run init command with no input (won't do anything on project that already has a package.json)
+    await new Command("cmd", ["/C", package_manager, "init", "-y"], {
+      cwd: this.path,
+    })
       .execute()
+      .then( ()=> console.log("In first"))
+      .catch((err) => {
+        this.setToastError(
+          `${package_manager} couldn't be initialized, see ${err}`
+        );
+        return false;
+      });
+
+    await new Command("cmd", ["/C", package_manager, "i", package_name], {
+      cwd: this.path,
+    })
+      .execute(
+      ).then(() => console.log("In second"))
       .catch((err) => {
         this.setToastError(`${package_name} couldn't be installed, see ${err}`);
         return false;
@@ -88,11 +155,19 @@ export class JavascriptProjectCommands extends BaseProjectCommands {
     return true;
   }
 
-  async initializeTailwind() {
+  async initializeTailwind(Package_Manager: JavascriptPackageManager) {
     this.setToastMessage("Adding tailwind...");
     await new Command(
       "cmd",
-      ["/C", "npm", "install", "-D", "tailwindcss", "postcss", "autoprefixer"],
+      [
+        "/C",
+        Package_Manager,
+        "install",
+        "-D",
+        "tailwindcss",
+        "postcss",
+        "autoprefixer",
+      ],
       { cwd: this.path }
     )
       .execute()
@@ -100,11 +175,9 @@ export class JavascriptProjectCommands extends BaseProjectCommands {
         this.setToastError(`Tailwind couldn't be installed, see ${err}`);
         return false;
       });
-    await new Command(
-      "cmd",
-      ["/C", "npx", "tailwindcss", "init", "-p"],
-      { cwd: this.path }
-    )
+    await new Command("cmd", ["/C", "npx", "tailwindcss", "init", "-p"], {
+      cwd: this.path,
+    })
       .execute()
       .catch((err) => {
         this.setToastError(`Tailwind couldn't be installed, see ${err}`);
@@ -113,4 +186,3 @@ export class JavascriptProjectCommands extends BaseProjectCommands {
     this.setToastSuccess("Tailwind was added");
   }
 }
-

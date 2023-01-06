@@ -11,10 +11,16 @@ export const PythonSubmit = async ({
   Framework,
   Package_Manager,
   Project_Type,
+  Github_Repo,
   Packages,
   Template,
 }: PythonFormState) => {
   const project_toast = toast("Creating project...");
+  const progress_toast = toast("Project being created...", {
+      hideProgressBar: true,
+      autoClose: false,
+  });
+
   const Project = new PythonProjectCommands(Project_Name, Path, project_toast);
 
   // run checks to see if project should be created 
@@ -72,16 +78,13 @@ export const PythonSubmit = async ({
       }
     }
 
-    Project.GitSetup(Git_Setup);
+    Project.GitSetup(Git_Setup, Github_Repo);
   }
 
   // final success message, made async to avoid it happening out of order
-  const makeThisAsync = async () => {
-    toast.update(project_toast, {
+  toast.update(progress_toast, {
       type: toast.TYPE.SUCCESS,
       render: `Project ${Project_Name} created at ${Project.path}`,
       autoClose: 5000,
-    });
-  };
-  await makeThisAsync();
+  });
 };

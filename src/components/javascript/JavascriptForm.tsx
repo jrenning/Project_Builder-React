@@ -25,6 +25,11 @@ export const overallFormSchemaJavascript = z.object({
   }),
   Github_Repo: z.string().optional(),
   Packages: z.string().optional(),
+  CSS: z.enum([
+    "Plain CSS",
+    "Tailwind",
+    "Styled Components"
+  ]),
   Project_Name: z.string().min(1, "Please enter a name"),
   Project_Type: z.enum(["New Project", "Use Existing Template"]),
   Path: z.string(),
@@ -40,6 +45,7 @@ export default function JavascriptForm() {
     Git_Setup: "No Setup",
     Github_Repo: "",
     Packages: "",
+    CSS: "Plain CSS",
     Project_Name: "",
     Project_Type: "New Project",
     Path: "",
