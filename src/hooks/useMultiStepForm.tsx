@@ -35,7 +35,7 @@ export const overallFormOptions = z.object({
   Project_Type: z.enum(["New Project", "Use Existing Template"]),
   Path: z.string(),
   Template: z.string().optional(),
-  Framework: z.enum(["Django", "Flask", "Vanilla", "React (CRA)", "Next"]),
+  Framework: z.enum(["Django", "Flask", "Vanilla", "React (CRA)", "Next", "T3"]),
   Package_Manager: z.enum(["Venv", "Poetry", "npm", "yarn", "None", "Cargo"]),
   Git_Setup: z.enum([
     "No Setup",

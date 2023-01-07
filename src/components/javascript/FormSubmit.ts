@@ -56,6 +56,12 @@ export const JavascriptSubmit = async ({
         return;
       }
     }
+    if (Framework == "T3") {
+      let result = await Project.createT3App(Package_Manager);
+      if (!result) {
+        return
+      }
+    }
 
     if (Framework == "Vanilla") {
       await Project.createProjectDirectory();

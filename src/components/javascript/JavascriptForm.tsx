@@ -6,7 +6,7 @@ import { useMultiStepForm } from "../../hooks/useMultiStepForm";
 import Step2FormJavascript from "./Step2FormJavascript";
 
 export const overallFormSchemaJavascript = z.object({
-  Framework: z.enum(["Vanilla", "React (CRA)", "Next"], {
+  Framework: z.enum(["Vanilla", "React (CRA)", "Next", "T3"], {
     required_error: "Framework is required",
     invalid_type_error: "Invalid Framework",
   }),

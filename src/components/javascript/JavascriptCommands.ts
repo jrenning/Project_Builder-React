@@ -96,7 +96,6 @@ export class JavascriptProjectCommands extends BaseProjectCommands {
       return false;
     }
 
-
     this.setToastMessage("Creating next app...");
     let test = await new Command(
       "cmd",
@@ -117,7 +116,6 @@ export class JavascriptProjectCommands extends BaseProjectCommands {
         return false;
       });
 
-
     this.setToastSuccess("Created next app");
 
     // set new path
@@ -125,6 +123,45 @@ export class JavascriptProjectCommands extends BaseProjectCommands {
     return true;
   }
 
+  async createT3App(
+    Package_Manager: JavascriptPackageManager
+  ): Promise<boolean> {
+    // check for uppercase name
+    if (!this.checkUppercase()) {
+      return false;
+    }
+
+    this.setToastMessage("Creating T3 app...");
+    if (Package_Manager == "npm") {
+      let test = await new Command(
+        "cmd",
+        ["/C", "npm", "create-t3-app@latest", this.name, "-y"],
+        { cwd: this.path }
+      )
+        .execute()
+        .catch((err) => {
+          this.setToastError(`T3 app couldn't be created, see ${err}`);
+          return false;
+        });
+    } else if (Package_Manager == "yarn") {
+      let test = await new Command(
+        "cmd",
+        ["/C", "yarn", "create", "t3-app", this.name, "-y"],
+        { cwd: this.path }
+      )
+        .execute()
+        .catch((err) => {
+          this.setToastError(`T3 app couldn't be created, see ${err}`);
+          return false;
+        });
+    }
+
+    this.setToastSuccess("Created T3 app");
+
+    // set new path
+    this.path = this.path + "\\" + this.name + "\\";
+    return true;
+  }
   async AddPackage(
     package_name: string,
     package_manager: string
@@ -134,7 +171,7 @@ export class JavascriptProjectCommands extends BaseProjectCommands {
       cwd: this.path,
     })
       .execute()
-      .then( ()=> console.log("In first"))
+      .then(() => console.log("In first"))
       .catch((err) => {
         this.setToastError(
           `${package_manager} couldn't be initialized, see ${err}`
@@ -145,8 +182,8 @@ export class JavascriptProjectCommands extends BaseProjectCommands {
     await new Command("cmd", ["/C", package_manager, "i", package_name], {
       cwd: this.path,
     })
-      .execute(
-      ).then(() => console.log("In second"))
+      .execute()
+      .then(() => console.log("In second"))
       .catch((err) => {
         this.setToastError(`${package_name} couldn't be installed, see ${err}`);
         return false;

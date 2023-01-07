@@ -83,7 +83,7 @@ function Step2FormJavascript({
           select_name="Framework"
           select_label="Framework"
           default_option="Vanilla"
-          options={["React (CRA)", "Next"]}
+          options={["React (CRA)", "Next", "T3"]}
           control={form.control}
         />
         <SelectBox
