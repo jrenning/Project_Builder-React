@@ -133,9 +133,10 @@ export class JavascriptProjectCommands extends BaseProjectCommands {
 
     this.setToastMessage("Creating T3 app...");
     if (Package_Manager == "npm") {
-      let test = await new Command(
+
+      let result = await new Command(
         "cmd",
-        ["/C", "npm", "create-t3-app@latest", this.name, "-y"],
+        ["/C", "npm", "create", "t3-app@latest", this.name, "--", "-y"],
         { cwd: this.path }
       )
         .execute()
@@ -143,10 +144,16 @@ export class JavascriptProjectCommands extends BaseProjectCommands {
           this.setToastError(`T3 app couldn't be created, see ${err}`);
           return false;
         });
+        //@ts-ignore
+        if (result.code == 1) {
+          //@ts-ignore
+          this.setToastError(`T3 app couldn't be created, see ${result.stdout}`);
+          return false
+        }
     } else if (Package_Manager == "yarn") {
       let test = await new Command(
         "cmd",
-        ["/C", "yarn", "create", "t3-app", this.name, "-y"],
+        ["/C", "yarn", "create", "t3-app", this.name, "--", "-y"],
         { cwd: this.path }
       )
         .execute()
@@ -154,7 +161,18 @@ export class JavascriptProjectCommands extends BaseProjectCommands {
           this.setToastError(`T3 app couldn't be created, see ${err}`);
           return false;
         });
+      //@ts-ignore
+      if (result.code == 1) {
+        //@ts-ignore
+        this.setToastError(`T3 app couldn't be created, see ${result.stdout}`);
+        return false;
+      }
     }
+    else {
+      this.setToastError("Creating a T3 app requires the use of a package manager")
+      return false
+    }
+
 
     this.setToastSuccess("Created T3 app");
 
