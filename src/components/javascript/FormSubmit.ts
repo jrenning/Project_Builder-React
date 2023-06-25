@@ -32,9 +32,12 @@ export const JavascriptSubmit = async ({
     project_toast
   );
 
+  console.log("Started")
+
   // run checks to see if project should be created
   let checks = await Project.runInitialChecks(Package_Manager, Git_Setup);
 
+  console.log("Finished checks")
   // return if checks fail
   if (!checks) {
     return;
@@ -51,6 +54,7 @@ export const JavascriptSubmit = async ({
       }
     }
     if (Framework == "Next") {
+      console.log("In next")
       let result = await Project.createNextApp();
       if (!result) {
         return;
@@ -85,6 +89,7 @@ export const JavascriptSubmit = async ({
     // handle css
     if (CSS) {
       if (CSS == "Tailwind") {
+        console.log("Start tailwind")
         await Project.initializeTailwind(Package_Manager);
       } else if (CSS == "Styled Components") {
         await Project.AddPackage("styled-components", Package_Manager);

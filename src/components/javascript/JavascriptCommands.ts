@@ -105,8 +105,13 @@ export class JavascriptProjectCommands extends BaseProjectCommands {
         "create-next-app@latest",
         this.name,
         "--typescript",
+        "--tailwind",
         "--eslint",
         "--use-npm",
+        "--src-dir",
+        "--app",
+        "--import-alias",
+        "'@/*'"
       ],
       { cwd: this.path }
     )
@@ -115,6 +120,8 @@ export class JavascriptProjectCommands extends BaseProjectCommands {
         this.setToastError(`Next app couldn't be created, see ${err}`);
         return false;
       });
+
+    console.log("Created next")
 
     this.setToastSuccess("Created next app");
 
